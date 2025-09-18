@@ -26,7 +26,7 @@ iniziamo con i passaggi per crearla!
 
 ____________________________________________________________
 
-  dopo aver capito cos'è un database, iniziamo!
+  Dopo aver capito cos'è un database, iniziamo!
 
 1)	prima identifichiamo le tabelle di Books e Reviews con le loro value:
 
@@ -50,7 +50,68 @@ ____________________________________________________________
 
   2) creiamo il db su MySQL Workbench
 
-    ecco qui un'esempio di creazione di un db usando le seguenti query:
+    ecco i passaggi iniziali:
+
+    1) se non hai ancora creato un Mysql connector, creiamone subito uno!
+
+      1) aprire Mysql Workbench 
+
+      2) vicino a MySQL Connectors cliccare il + alla sua destra
+
+      3) inserire il nome della connection name (puoi mettere quello che vuoi)
+
+      4) inserisci lo username (questo ci servirà dopo, siccome dovremmo poi inserire questo dato nel progetto)
+
+      5) fai il test connection e vedi se è andato tutto correttamente
+
+      6) clicca ok
+
+      *ora abbiamo il connector per il db!*
+
+    2) ora che abbiamo il Mysql connector, andiamo a cliccarlo ed entriamoci!
+
+    per creare un database segui questi passaggi:
+
+      1) nella barra a sinistra (SCHEMAS), clicca col tasto destro del mouse (sotto a tutto) e clicca "create schema..."
+
+      2) inserisci il nome del database (ci servirà quindi ricordati il nome!)
+
+      3) clicca apply e il gioco è fatto!
+
+    ora, siccome non abbiamo un database come reference ne creiamo uno come esempio!
+
+    ma prima, se non abbiamo ancora un sql file per scrivere le query, basta cliccare in alto a destra il pulsantino con un foglio, il cui all'interno c'è scritto sql e in basso a sinistra ci sta un +
+
+    *facendo cosi creiamo un file SQL dove possiamo scrivere le nostre query!*
+
+  __________________
+
+    NOTA! se hai già un database nel tuo computer, segui questi passaggi, ed evita quelli di creazione del database tramite query!
+
+    1) seleziona il tuo database vuoto
+
+    2) in alto a destra, clicca su Server, e vai su Data Import
+
+    3) seleziona la dicitura "import from Self-Contained-File"
+
+    4) clicca dove stanno i [...] per selezionare il file da importare
+
+    5) scegli il file.sql che tiene il database
+
+    6) in "Default Target Schema, seleziona il db_nomeDato" (ini cui nomeDato = al nome del database che gli hai dato)
+
+    7) fatto ciò, clicca su start import
+
+    se tutto va bene, avrai importato il tuo database, e ti dovrebbe mostrare "Import completed" senza errori!
+
+    se hai fatto questo, passa direttamente al punto 2 -> CREAZIONE PROGETTO WEBAPP
+
+  __________________
+
+
+    ora creiamo un database!
+
+    ecco qui un'esempio di creazione di un db dei libri (database chiamato db_books), usando le seguenti query:
 
       1) Creazione del database
 
@@ -85,48 +146,48 @@ ____________________________________________________________
 
   3) ora inseriamo qualche dato:
 
-  1) Inserimento libri
-      INSERT INTO Books (title, author, image, abstract)
-      VALUES
-      ('Il nome della rosa', 'Umberto Eco', 'https://example.com/nome_rosa.jpg', 'Un romanzo storico ambientato in un monastero medievale con un mistero da risolvere.'),
-      ('1984', 'George Orwell', 'https://example.com/1984.jpg', 'Un classico della distopia che descrive un futuro totalitario e oppressivo.'),
-      ('Il Signore degli Anelli', 'J.R.R. Tolkien', 'https://example.com/lotr.jpg', 'Un’epica avventura fantasy ambientata nella Terra di Mezzo.'),
-      ('Orgoglio e pregiudizio', 'Jane Austen', 'https://example.com/pride_prejudice.jpg', 'Un romanzo che esplora i temi dell’amore, del matrimonio e delle convenzioni sociali.'),
-      ('Cronache di Narnia: Il leone, la strega e l’armadio', 'C.S. Lewis', 'https://example.com/narnia.jpg', 'Un classico fantasy per ragazzi con simbolismi profondi e avventure magiche.');
+    1) Inserimento libri
+        INSERT INTO Books (title, author, image, abstract)
+        VALUES
+        ('Il nome della rosa', 'Umberto Eco', 'https://example.com/nome_rosa.jpg', 'Un romanzo storico ambientato in un monastero medievale con un mistero da risolvere.'),
+        ('1984', 'George Orwell', 'https://example.com/1984.jpg', 'Un classico della distopia che descrive un futuro totalitario e oppressivo.'),
+        ('Il Signore degli Anelli', 'J.R.R. Tolkien', 'https://example.com/lotr.jpg', 'Un’epica avventura fantasy ambientata nella Terra di Mezzo.'),
+        ('Orgoglio e pregiudizio', 'Jane Austen', 'https://example.com/pride_prejudice.jpg', 'Un romanzo che esplora i temi dell’amore, del matrimonio e delle convenzioni sociali.'),
+        ('Cronache di Narnia: Il leone, la strega e l’armadio', 'C.S. Lewis', 'https://example.com/narnia.jpg', 'Un classico fantasy per ragazzi con simbolismi profondi e avventure magiche.');
 
-    2) Inserimento recensioni
-      INSERT INTO Reviews (books_id, name, vote, text)
-      VALUES
-      -- Recensioni per "Il nome della rosa" (id = 1)
-      (1, 'Marco Rossi', 5, 'Un capolavoro assoluto, avvincente e colto.'),
-      (1, 'Giulia Bianchi', 4, 'Molto bello, ma a tratti un po’ complesso.'),
-      (1, 'Andrea Conti', 5, 'Intrigante e scritto in modo magistrale.'),
+      2) Inserimento recensioni
+        INSERT INTO Reviews (books_id, name, vote, text)
+        VALUES
+        -- Recensioni per "Il nome della rosa" (id = 1)
+        (1, 'Marco Rossi', 5, 'Un capolavoro assoluto, avvincente e colto.'),
+        (1, 'Giulia Bianchi', 4, 'Molto bello, ma a tratti un po’ complesso.'),
+        (1, 'Andrea Conti', 5, 'Intrigante e scritto in modo magistrale.'),
 
-      -- Recensioni per "1984" (id = 2)
-      (2, 'Luca Verdi', 5, 'Un libro che fa riflettere, sempre attuale.'),
-      (2, 'Anna Neri', 3, 'Interessante, ma la narrazione a volte è lenta.'),
-      (2, 'Francesca Blu', 4, 'Distopico e intenso, mi ha colpito molto.'),
+        -- Recensioni per "1984" (id = 2)
+        (2, 'Luca Verdi', 5, 'Un libro che fa riflettere, sempre attuale.'),
+        (2, 'Anna Neri', 3, 'Interessante, ma la narrazione a volte è lenta.'),
+        (2, 'Francesca Blu', 4, 'Distopico e intenso, mi ha colpito molto.'),
 
-      -- Recensioni per "Il Signore degli Anelli" (id = 3)
-      (3, 'Davide Gialli', 5, 'Il fantasy per eccellenza, indimenticabile.'),
-      (3, 'Sara Rosa', 5, 'Tolkien ha creato un mondo unico, emozionante.'),
-      (3, 'Marta Viola', 4, 'Bellissimo ma molto lungo.'),
+        -- Recensioni per "Il Signore degli Anelli" (id = 3)
+        (3, 'Davide Gialli', 5, 'Il fantasy per eccellenza, indimenticabile.'),
+        (3, 'Sara Rosa', 5, 'Tolkien ha creato un mondo unico, emozionante.'),
+        (3, 'Marta Viola', 4, 'Bellissimo ma molto lungo.'),
 
-      -- Recensioni per "Orgoglio e pregiudizio" (id = 4)
-      (4, 'Chiara Azzurri', 5, 'Un classico senza tempo, adorabile.'),
-      (4, 'Elena Grigi', 4, 'Stile elegante, personaggi ben caratterizzati.'),
-      (4, 'Paolo Neri', 3, 'Interessante ma non il mio genere.'),
+        -- Recensioni per "Orgoglio e pregiudizio" (id = 4)
+        (4, 'Chiara Azzurri', 5, 'Un classico senza tempo, adorabile.'),
+        (4, 'Elena Grigi', 4, 'Stile elegante, personaggi ben caratterizzati.'),
+        (4, 'Paolo Neri', 3, 'Interessante ma non il mio genere.'),
 
-      -- Recensioni per "Cronache di Narnia" (id = 5)
-      (5, 'Simone Marrone', 5, 'Magico e pieno di simbolismi, perfetto per ragazzi.'),
-      (5, 'Alessia Lilla', 4, 'Una storia avvincente, anche se semplice.'),
-      (5, 'Giovanni Fucsia', 5, 'Un’avventura meravigliosa che mi ha segnato da bambino.');
+        -- Recensioni per "Cronache di Narnia" (id = 5)
+        (5, 'Simone Marrone', 5, 'Magico e pieno di simbolismi, perfetto per ragazzi.'),
+        (5, 'Alessia Lilla', 4, 'Una storia avvincente, anche se semplice.'),
+        (5, 'Giovanni Fucsia', 5, 'Un’avventura meravigliosa che mi ha segnato da bambino.');
 
 ____________________________________________________________
 
 2) CREAZIONE PROGETTO WEBAPP
 
-  dopo creato il db (se non lo avevi) e inserito dei dati(sempre se non li avevi), creiamo il nostro progetto attraverso questa steplist:
+  dopo creato il db (se non lo avevi) e inserito dei dati nelle table (sempre se non li avevi), creiamo il nostro progetto attraverso questa steplist:
 
   1) Creo la cartella del progetto e la apro con vscode per lanciare il comando npm init
 
@@ -165,32 +226,38 @@ ____________________________________________________________
 
   6) creo la cartella data, con all'interno il file db.js
 
+    *questo servirà a noi per collegarci direttamente al database che abbiamo!*
     il suo contenuto sara questo:
 
-    // importiamo mysql2
-    const mysql = require("mysql2");
+    __
 
-    // creo la connessione 
-    // NOTA: in password, inserisci la password che hai messo nel tuo database
-    const connection = mysql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: "password", 
-        database: "db_books",
-        port: 3306
-    });
+      // importiamo mysql2
+      const mysql = require("mysql2");
 
-    // stabilisco la connessione al db
-    connection.connect((err) => {
-        if (err) {
-            console.log(`Errore nella connessione al db: ${err}`);
-        } else {
-            console.log("Connessione al db avvenuta correttamente");
-        }
-    });
+      // creo la connessione 
+      // NOTA: in password, user e database, inserisci i dati che hai messo quando hai creato il MySQL Connections!
 
-    //esporto connection
-    module.exports = connection;
+      const connection = mysql.createConnection({
+          host: "localhost",
+          user: "root",
+          password: "password", 
+          database: "db_books",
+          port: 3306
+      });
+
+      // stabilisco la connessione al db
+      connection.connect((err) => {
+          if (err) {
+              console.log(`Errore nella connessione al db: ${err}`);
+          } else {
+              console.log("Connessione al db avvenuta correttamente");
+          }
+      });
+
+      //esporto connection
+      module.exports = connection;
+
+    __
 
   7) in app.js, sotto a const express, ci aggiungiamo questo:
 
@@ -232,7 +299,7 @@ ____________________________________________________________
 
   *NOTA: sempre in DB_PASSWORD ricorda di inserire sempre la stessa password che hai messo nel db, senno darà errore!*
 
-  2) inseriamolo nel .gitignore (qui per far vedere come funziona non lo metterò, ma si deve mettere sempre nel gitignore)
+  2) inseriamolo nel .gitignore (qui per far vedere come funziona non lo metterò nel .gitignore, ma si deve mettere sempre nel .gitignore il .env)
 
   3) cambiamo la const connection con questo content:
 
@@ -245,7 +312,7 @@ ____________________________________________________________
         port: process.env.DB_PORT
     });
 
-    In questo modo, se cambi i valori nel file .env, non devi modificare il codice!
+    *In questo modo, se cambi i valori nel file .env, non devi modificare il codice!*
 
   4) Nel package.json vado ad aggiungere ai comandi start ed watch --env-file=.env prima di app.js e prima di --watch
 
@@ -256,6 +323,8 @@ ____________________________________________________________
       "watch": "node --env-file=.env --watch app.js",
       "test": "echo \"Error: no test specified\" && exit 1"
     }
+
+    *ora i comandi sono sempre gli stessi comandi, ma con più sicurezza!*
 
 ____________________________________________________________
 
@@ -280,17 +349,18 @@ ____________________________________________________________
     3) Prepara e invia la risposta al client, tipicamente in formato JSON o HTML.
 
   grazie al controller
+
     1) noi siamo in grado di separare le responsabilità delle richieste al database, in modo tale che eseguiamo una query in base a quello che ci serve!
 
     2) controlla se ci sono degli eventuali errori restituendo messaggi appropriati, attraverso la value err, che può tornare un res.status(500), res.status(404), etc.
-
+  
+  
   ___________
 
- 
 
  ora che sappiamo meglio il controller, creiamolo:
 
-    1) creiamo una cartella controller e ci mettiamo un file chiamato bookController.js, dove al suo interno inseriremo tutte le query!
+    1) creiamo una cartella controllers e ci mettiamo un file chiamato bookController.js, dove al suo interno inseriremo tutte le query!
 
     2) creiamo le varie constanti (index, show, ...)
 
@@ -314,7 +384,7 @@ ____________________________________________________________
           show
       }  
 
-      ovviamente index e show non avranno questi contenuti, ma iniziamo almeno a creare uno scheletro al suo interno!
+      *index e show, alla fine, non avranno questi contenuti, ma iniziamo almeno a creare uno scheletro all'interno del controller!*
 
 ____________________________________________________________
 
@@ -350,9 +420,15 @@ ____________________________________________________________
       //definisco le rotte per i libri
       app.use("/books", bookRouter);
 
+    *in questo modo possiamo gia vedere i risultati su postman! (se vuoi vedere già i risultati vai al punto 7 -> TEST POSTMAN, dove anziche la lista ti compariranno come risultati i console.log inseriti nei controller)*
+
 ____________________________________________________________
 
 6) QUERY 
+
+  si ma adesso vediamo solo dei console.log, non la lista che vogliamo vedere....
+  *ed è qui che ci sono in soccorso nostro le query!*
+
 
   ora creiamo delle query nel controller!
 
@@ -388,6 +464,8 @@ ____________________________________________________________
           console.log("show eseguito con successo!")
       })
 
+    *questi andranno a sostituire i console.log, in modo tale che dopo su postman troveremo come risultati la tabella!*
+
   ________________________________
 
     0) PASSAGGI EXTRA!
@@ -412,6 +490,8 @@ ____________________________________________________________
                 const sqlReviews = "SELECT * FROM reviews WHERE books_id = ?";
 
           *in questo modo prendiamo sia libri che le recensioni!*
+
+          NOTA! qui si può anche usare una JOIN!
           
           2) sotto il controllo del libro non trovato:
 
@@ -439,12 +519,15 @@ ____________________________________________________________
          -> res.json(results);
 
          ALTRIMENTI TI DARA ERRORE!
-*adesso, se dopo su postman si fa la request show, vedremo anche le recensioni!*
+
+*adesso, se dopo su postman si fa la request show, oltre ai libri, vedremo anche le recensioni!*
+
+in seguito poi possiamo mettere anche POST,PUT E DELETE, ma per ora testiamo questi 2 nel prossimo punto!
 
 ____________________________________________________________
 
 7) TEST POSTMAN
-    ora testiamo il tutto con postman!
+    ora che abbiamo index e show, testiamo il tutto con postman!
 
     1) INIZIALIZZAZIONE POSTMAN
 

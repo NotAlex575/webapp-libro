@@ -35,5 +35,3 @@ module.exports = {
     index,
     show
 }
-
-module.exports = connection;

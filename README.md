@@ -144,7 +144,25 @@ ____________________________________________________________
       "test": "echo \"Error: no test specified\" && exit 1"
     },
 
-  5) Creo il file app.js
+  5) Creo il file app.js:
+
+    Scriviamo nel nostro app.js i comandi necessari per importare express, utilizzarlo e creare la rotta base nonché mettere in ascolto il server su una porta definita da noi (tipicamente la 3000)
+
+    1) Importiamo express:
+          const express = require('express');
+
+    2) Definiamo la variabile app che contiene un’istanza di express:
+          const app = express();
+
+    3) Definiamo la porta sulla quale deve rimanere in ascolto il server:
+          const port = 3000;
+
+    4) Definiamo la rotta base della nostra applicazione:
+          app.get('/', (req, res) => { /* codice */ })
+
+    5) Diciamo al server di rimanere in ascolto sulla porta 3000:
+          app.listen(port, () => { /* messaggio */ })
+
 
   6) creo la cartella data, con all'interno il file db.js
 
@@ -175,7 +193,7 @@ ____________________________________________________________
   7) in app.js, sotto a const express, ci aggiungiamo questo:
 
     //connessione con il database in app.js
-    const connection = require("/data/db");
+    const connection = require("./data/db");
 
 ____________________________________________________________
 
@@ -264,8 +282,6 @@ ____________________________________________________________
         show
     }  
 
-    module.exports = connection;
-
     ovviamente index e show non avranno questi contenuti, ma iniziamo almeno a creare uno scheletro al suo interno!
 
 ____________________________________________________________
@@ -311,7 +327,7 @@ ____________________________________________________________
   1) in controllers/bookController.js modifichiamo index e show in questa maniera:
 
     //index => recuperiamo tutta la tabella libri
-    
+
     const index = (req, res) => {
       const sql = "SELECT * FROM books";
 

@@ -28,7 +28,7 @@ ____________________________________________________________
 
   dopo aver capito cos'è un database, iniziamo!
 
-  1) dobbiamo prima identificare le tabelle di Books e Reviews:
+1)	prima identifichiamo le tabelle di Books e Reviews con le loro value:
 
     Books table
 
@@ -85,7 +85,7 @@ ____________________________________________________________
 
   3) ora inseriamo qualche dato:
 
-    1) Inserimento libri
+  1) Inserimento libri
       INSERT INTO Books (title, author, image, abstract)
       VALUES
       ('Il nome della rosa', 'Umberto Eco', 'https://example.com/nome_rosa.jpg', 'Un romanzo storico ambientato in un monastero medievale con un mistero da risolvere.'),
@@ -163,20 +163,21 @@ ____________________________________________________________
     5) Diciamo al server di rimanere in ascolto sulla porta 3000:
           app.listen(port, () => { /* messaggio */ })
 
-
   6) creo la cartella data, con all'interno il file db.js
 
     il suo contenuto sara questo:
+
     // importiamo mysql2
     const mysql = require("mysql2");
 
-    // creo la connessione (NOTA: in password, inserisci la password che hai messo nel tuo database)
+    // creo la connessione 
+    // NOTA: in password, inserisci la password che hai messo nel tuo database
     const connection = mysql.createConnection({
         host: "localhost",
         user: "root",
         password: "password", 
         database: "db_books",
-        port: 3307
+        port: 3306
     });
 
     // stabilisco la connessione al db
@@ -188,6 +189,7 @@ ____________________________________________________________
         }
     });
 
+    //esporto connection
     module.exports = connection;
 
   7) in app.js, sotto a const express, ci aggiungiamo questo:
@@ -195,9 +197,11 @@ ____________________________________________________________
     //connessione con il database in app.js
     const connection = require("./data/db");
 
+    *cosi app.js sarà collegato col database!*
+
 ____________________________________________________________
 
-3) CREAZIONE ENV
+3) CREAZIONE .ENV
 
   *DOMANDA: COS'E L'ENV E A CHE SERVE?*
 
@@ -217,16 +221,16 @@ ____________________________________________________________
 
   dopo aver capito cos'è il .env e la sua utitità, continuiamo la steplist!
 
-
   1) creiamo un env, inserendo al suo interno inserisco delle variabili che serviranno per la connessione al database ed il numero di porta su cui deve rimanere in ascolto il server:
 
     PORT=3000
     DB_HOST=localhost
     DB_USER=root
-    DB_PASSWORD=route
+    DB_PASSWORD=password
     DB_DATABASE=db_books
     DB_PORT=3306
 
+  *NOTA: sempre in DB_PASSWORD ricorda di inserire sempre la stessa password che hai messo nel db, senno darà errore!*
 
   2) inseriamolo nel .gitignore (qui per far vedere come funziona non lo metterò, ma si deve mettere sempre nel gitignore)
 
@@ -259,31 +263,58 @@ ____________________________________________________________
 
   ora creiamo il controller!
 
-  1) creiamo una cartella controller e ci mettiamo un file chiamato bookControllers.js, dove al suo interno inseriremo tutte le query!
+  ma prima:
+  
+  ___________
 
-  2) creiamo le varie constanti (index, show, ...)
+  *DOMANDA: COS'E IL CONTROLLER E A COSA SERVE?*
 
-    struttura:
+  *RISPOSTA:*
 
-    //importiamo la connessione la db
-    const connection = require("../data/db");
+  Un controller è un componente che gestisce la logica tra le richieste dell’utente e i dati dell’applicazione.
 
-    //index
-    const index = (req, res) => {
-        console.log("Metodo index")
-    }
+    1) Riceve le richieste HTTP (GET, POST, PUT, DELETE) provenienti dal client.
 
-    //show
-    const show = (req, res) => {
-        console.log("Metodo show")
-    }
+    2) Interagisce con i modelli o direttamente con il database per leggere o scrivere dati.
 
-    module.exports = {
-        index,
-        show
-    }  
+    3) Prepara e invia la risposta al client, tipicamente in formato JSON o HTML.
 
-    ovviamente index e show non avranno questi contenuti, ma iniziamo almeno a creare uno scheletro al suo interno!
+  grazie al controller
+    1) noi siamo in grado di separare le responsabilità delle richieste al database, in modo tale che eseguiamo una query in base a quello che ci serve!
+
+    2) controlla se ci sono degli eventuali errori restituendo messaggi appropriati, attraverso la value err, che può tornare un res.status(500), res.status(404), etc.
+
+  ___________
+
+ 
+
+ ora che sappiamo meglio il controller, creiamolo:
+
+    1) creiamo una cartella controller e ci mettiamo un file chiamato bookController.js, dove al suo interno inseriremo tutte le query!
+
+    2) creiamo le varie constanti (index, show, ...)
+
+      struttura:
+
+      //importiamo la connessione la db
+      const connection = require("../data/db");
+
+      //index
+      const index = (req, res) => {
+          console.log("Metodo index")
+      }
+
+      //show
+      const show = (req, res) => {
+          console.log("Metodo show")
+      }
+
+      module.exports = {
+          index,
+          show
+      }  
+
+      ovviamente index e show non avranno questi contenuti, ma iniziamo almeno a creare uno scheletro al suo interno!
 
 ____________________________________________________________
 
@@ -291,7 +322,7 @@ ____________________________________________________________
 
   creiamo ora il router di book, in questo caso creiamo la cartella routers con il file bookRouter.js
 
-      al suo interno inseriamo:
+      al suo interno:
 
       // importiamo express
       const express = require('express');
@@ -309,9 +340,9 @@ ____________________________________________________________
 
       module.exports = router;
 
-    questi ci serviranno poi su postman per vedere i risultati!
+    *questi ci serviranno poi su postman per vedere i risultati!*
 
-    4) creato quindi il router, andiamo in app.js e importiamo il router!
+    creato quindi il router, andiamo in app.js e importiamo il router!
 
       //importo il router
       const bookRouter = require("./routers/bookRouter");
@@ -359,62 +390,69 @@ ____________________________________________________________
 
   ________________________________
 
-    0) PASSAGGI +
+    0) PASSAGGI EXTRA!
 
-      1) check per vedere se non trovo un libro:
+      1) CHECK PER VEDERE SE NON TROVO UN LIBRO:
 
         in show possiamo fare un check per vedere se non trovo un libro (lo metti dopo l'if(err)):
 
         //controllo se non ho trovato il libro
-        if(resultBook.length === 0 || resultBook[0].id === null) res.status(404).json({ error: "Libro non trovato!"}); 
+          if(resultBook.length === 0 || resultBook[0].id === null) 
+              return res.status(404).json({ error: "Libro non trovato!"});
 
-      2) array recensioni:
+      *in questo modo vediamo se non ci sono libri nel database oppure l'id inserito del libro non esiste!*
+
+      2) ARRAY RECENSIONI:
 
          sempre in show possiamo anche fare in modo che possiamo vedere le recensioni!
-         1) ora anzichè const sql dobbiamo prendere in considerazione 2 chiamate:
 
-              const sqlBook = "SELECT * FROM books WHERE id = ?";
-              const sqlReviews = "SELECT * FROM reviews WHERE books_id = ?";
-         
-         2) sotto il controllo del libro non trovato:
+          1) ora anzichè const sql, dobbiamo prendere in considerazione 2 chiamate:
 
-          //query per recuperare le recensioni del libro
-          connection.query(sqlReviews, [id], (err, resultReviews) => {
-           if(err)
-              return res.status(500).json({ error: "errore nell'esecuzione della query: "+err});
+                const sqlBook = "SELECT * FROM books WHERE id = ?";
+                const sqlReviews = "SELECT * FROM reviews WHERE books_id = ?";
 
-              //unisco il libro con le recensioni
-              const bookWithReviews = {
-                ...resultBook[0],
-                reviews: resultReviews
-              }
+          *in questo modo prendiamo sia libri che le recensioni!*
+          
+          2) sotto il controllo del libro non trovato:
 
-              //SOSTITUISCI res.json(results); CON QUESTO QUI SOTTO!
-              res.send(bookWithReviews)
-              console.log(`show eseguito con successo con id${id}!`)
-            })
+            //query per recuperare le recensioni del libro
+            connection.query(sqlReviews, [id], (err, resultReviews) => {
+            if(err)
+                return res.status(500).json({ error: "errore nell'esecuzione della query: "+err});
 
-         NOTA IMPORTANTE!
-         res.send(bookWithReviews) 
+                //unisco il libro con le recensioni
+                const bookWithReviews = {
+                  ...resultBook[0],
+                  reviews: resultReviews
+                }
+
+                //SOSTITUISCI res.json(results); CON QUESTO QUI SOTTO!
+
+                res.send(bookWithReviews)
+                console.log(`show eseguito con successo con id${id}!`)
+              })
+        NOTA IMPORTANTE! SE NON HAI NOTATO:
+         -> res.send(bookWithReviews) 
 
          andrà a sostituire 
 
-         res.json(results);
+         -> res.json(results);
 
+         ALTRIMENTI TI DARA ERRORE!
+*adesso, se dopo su postman si fa la request show, vedremo anche le recensioni!*
 
 ____________________________________________________________
 
 7) TEST POSTMAN
-
     ora testiamo il tutto con postman!
 
-    INIZIALIZZAZIONE POSTMAN
+    1) INIZIALIZZAZIONE POSTMAN
 
       1) apri postman
 
       2) crea una nuova connessione => blank collection (chiamiamola books)
 
-    CREAZIONE REQUEST (INDEX)
+    2) CREAZIONE REQUEST (INDEX)
 
       1) clicchiamo sul + vicino alla new connection (si genera cosi un get chiamato new request)
 
@@ -424,15 +462,15 @@ ____________________________________________________________
       
       se tutto va bene, su postman comparirà l'intera lista dei books!
 
-    CREAZIONE REQUEST (SHOW)
+    3) CREAZIONE REQUEST (SHOW)
 
       1) clicchiamo sul + vicino alla new connection (si genera cosi un get chiamato new request)
 
-      2) chiamiamolo show, ed inseriamo l'url:
+      2) chiamiamolo show, ed inseriamo l'url (ecco un esempio qui sotto):
 
       http://localhost:3000/books/1 
 
-      IMPORTANTE! inseriamo davanti 1 siccome sarà l'id da ricercare del libro
+      IMPORTANTE! inseriamo davanti  1 siccome sarà l'id da ricercare del libro
 
       se tutto va bene, su postman comparirà il singolo elemento del book (se hai fatto i passaggi extra, allora vedremo anche la sua recensione)!
 

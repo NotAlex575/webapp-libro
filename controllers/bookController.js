@@ -29,7 +29,7 @@ const show = (req, res) => {
               return res.status(500).json({ error: "errore nell'esecuzione della query: "+err});
           
           //controllo se non ho trovato il libro
-          if(resultBook.length === 0) 
+          if(resultBook.length === 0 || resultBook[0].id === null) 
               return res.status(404).json({ error: "Libro non trovato!"});
 
           //query per recuperare le recensioni del libro
@@ -44,7 +44,7 @@ const show = (req, res) => {
               }
 
               res.send(bookWithReviews)
-              console.log(`show eseguito con successo con id${id}!`)
+              console.log(`show eseguito con successo con id ${id}!`)
             })
 
 

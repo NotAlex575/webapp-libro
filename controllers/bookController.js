@@ -19,15 +19,35 @@ const show = (req, res) => {
     //prendiamo l'id inserito su postman
       const { id } = req.params;
 
-      //definizione della query da eseguire
-      const sql = "SELECT * FROM books WHERE id = ?";
+     // definizione della query da eseguire
+     const sqlBook = "SELECT * FROM books WHERE id = ?";
+     const sqlReviews = "SELECT * FROM reviews WHERE books_id = ?";
       
       //controlliamo se la query inserita è stata eseguita con successo
-      connection.query(sql, [id], (err, results) => {
+      connection.query(sqlBook, [id], (err, resultBook) => {
           if(err)
               return res.status(500).json({ error: "errore nell'esecuzione della query: "+err});
-          res.json(results);
-          console.log("show eseguito con successo!")
+          
+          //controllo se non ho trovato il libro
+          if(resultBook.length === 0) 
+              return res.status(404).json({ error: "Libro non trovato!"});
+
+          //query per recuperare le recensioni del libro
+          connection.query(sqlReviews, [id], (err, resultReviews) => {
+           if(err)
+              return res.status(500).json({ error: "errore nell'esecuzione della query: "+err});
+
+              //unisco il libro con le recensioni
+              const bookWithReviews = {
+                ...resultBook[0],
+                reviews: resultReviews
+              }
+
+              res.send(bookWithReviews)
+              console.log(`show eseguito con successo con id${id}!`)
+            })
+
+
       })
 }
 

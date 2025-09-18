@@ -6,7 +6,7 @@ iniziamo con i passaggi per crearla!
 
 1) CREAZIONE DATABASE 
 
-___________________________________________________________
+  __________________________________________________________
 
   *DOMANDA: COS'E UN DATABASE?*
 
@@ -221,11 +221,12 @@ ____________________________________________________________
   1) creiamo un env, inserendo al suo interno inserisco delle variabili che serviranno per la connessione al database ed il numero di porta su cui deve rimanere in ascolto il server:
 
     PORT=3000
-    DB_HOST= localhost
-    USER=ROOT
+    DB_HOST=localhost
+    DB_USER=root
     DB_PASSWORD=route
-    DB_NAME = db_books
-    DB_PORT= 3306
+    DB_DATABASE=db_books
+    DB_PORT=3306
+
 
   2) inseriamolo nel .gitignore (qui per far vedere come funziona non lo metterò, ma si deve mettere sempre nel gitignore)
 
@@ -316,7 +317,7 @@ ____________________________________________________________
       const bookRouter = require("./routers/bookRouter");
 
       //definisco le rotte per i libri
-      app.use("/api/books", bookRouter);
+      app.use("/books", bookRouter);
 
 ____________________________________________________________
 
@@ -355,5 +356,84 @@ ____________________________________________________________
           res.json(results);
           console.log("show eseguito con successo!")
       })
+
+  ________________________________
+
+    0) PASSAGGI +
+
+      1) check per vedere se non trovo un libro:
+
+        in show possiamo fare un check per vedere se non trovo un libro (lo metti dopo l'if(err)):
+
+        //controllo se non ho trovato il libro
+        if(resultBook.length === 0 || resultBook[0].id === null) res.status(404).json({ error: "Libro non trovato!"}); 
+
+      2) array recensioni:
+
+         sempre in show possiamo anche fare in modo che possiamo vedere le recensioni!
+         1) ora anzichè const sql dobbiamo prendere in considerazione 2 chiamate:
+
+              const sqlBook = "SELECT * FROM books WHERE id = ?";
+              const sqlReviews = "SELECT * FROM reviews WHERE books_id = ?";
+         
+         2) sotto il controllo del libro non trovato:
+
+          //query per recuperare le recensioni del libro
+          connection.query(sqlReviews, [id], (err, resultReviews) => {
+           if(err)
+              return res.status(500).json({ error: "errore nell'esecuzione della query: "+err});
+
+              //unisco il libro con le recensioni
+              const bookWithReviews = {
+                ...resultBook[0],
+                reviews: resultReviews
+              }
+
+              //SOSTITUISCI res.json(results); CON QUESTO QUI SOTTO!
+              res.send(bookWithReviews)
+              console.log(`show eseguito con successo con id${id}!`)
+            })
+
+         NOTA IMPORTANTE!
+         res.send(bookWithReviews) 
+
+         andrà a sostituire 
+
+         res.json(results);
+
+
+____________________________________________________________
+
+7) TEST POSTMAN
+
+    ora testiamo il tutto con postman!
+
+    INIZIALIZZAZIONE POSTMAN
+
+      1) apri postman
+
+      2) crea una nuova connessione => blank collection (chiamiamola books)
+
+    CREAZIONE REQUEST (INDEX)
+
+      1) clicchiamo sul + vicino alla new connection (si genera cosi un get chiamato new request)
+
+      2) chiamiamolo index, ed inseriamo l'url:
+
+      http://localhost:3000/books
+      
+      se tutto va bene, su postman comparirà l'intera lista dei books!
+
+    CREAZIONE REQUEST (SHOW)
+
+      1) clicchiamo sul + vicino alla new connection (si genera cosi un get chiamato new request)
+
+      2) chiamiamolo show, ed inseriamo l'url:
+
+      http://localhost:3000/books/1 
+
+      IMPORTANTE! inseriamo davanti 1 siccome sarà l'id da ricercare del libro
+
+      se tutto va bene, su postman comparirà il singolo elemento del book (se hai fatto i passaggi extra, allora vedremo anche la sua recensione)!
 
   

@@ -19,7 +19,7 @@ app.get("/", (req,res) =>{
 });
 
 //definisco le rotte per i libri
-app.use("/api/books", bookRouter);
+app.use("/books", bookRouter);
 
 //dico al server di rimanere in ascolto sulla porta 3000
 app.listen(port, () =>{

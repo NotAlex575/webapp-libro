@@ -1,8 +1,32 @@
-SPIEGAZIONE LEZIONI WEBAPP
+STEPLIST CREAZIONE WEBAPP LIBRERIA (PASSO PER PASSO)
 
-Questa webapp avrà un db di libri a cui possiamo inserire delle recenzioni
+Questa webapp avrà un db di libri a cui possiamo inserire delle recenzioni!
+
+iniziamo con i passaggi per crearla!
 
 1) CREAZIONE DATABASE 
+
+___________________________________________________________
+
+  *DOMANDA: COS'E UN DATABASE?*
+
+  *RISPOSTA:*
+
+  Un database è un sistema che serve a raccogliere, organizzare e gestire dati in modo strutturato, così che possano essere facilmente consultati, modificati e mantenuti.
+
+  È come un archivio digitale:
+
+    1) una libreria -> è il database
+
+    2) gli scaffali -> sono le tabelle
+
+    3) i libri sugli scaffali -> sono i record (righe)
+
+    4) le informazioni in un libro (titolo, autore, anno) -> sono i campi (colonne)
+
+____________________________________________________________
+
+  dopo aver capito cos'è un database, iniziamo!
 
   1) dobbiamo prima identificare le tabelle di Books e Reviews:
 
@@ -146,14 +170,35 @@ ____________________________________________________________
         }
     });
 
+    module.exports = connection;
+
   7) in app.js, sotto a const express, ci aggiungiamo questo:
 
     //connessione con il database in app.js
     const connection = require("/data/db");
 
-________________________________________________________________
+____________________________________________________________
 
 3) CREAZIONE ENV
+
+  *DOMANDA: COS'E L'ENV E A CHE SERVE?*
+
+  *RISPOSTA:* 
+  
+  Il file .env serve per gestire le variabili d’ambiente del tuo progetto, cioè dei valori che possono cambiare da un ambiente all’altro (sviluppo, test, produzione) senza dover modificare direttamente il codice.
+
+  A cosa serve in pratica
+
+    1) Conserva dati sensibili che non devono stare nel codice (es. password del database, API key, token).
+
+    2) Permette di configurare l’applicazione senza toccare i file .js.
+
+    3) È più sicuro perché viene inserito nel .gitignore, quindi non viene caricato su GitHub o repository pubblici.
+
+    4) Ti consente di cambiare configurazioni velocemente (porta, user, db, ecc.).
+
+  dopo aver capito cos'è il .env e la sua utitità, continuiamo la steplist!
+
 
   1) creiamo un env, inserendo al suo interno inserisco delle variabili che serviranno per la connessione al database ed il numero di porta su cui deve rimanere in ascolto il server:
 
@@ -177,6 +222,8 @@ ________________________________________________________________
         port: process.env.DB_PORT
     });
 
+    In questo modo, se cambi i valori nel file .env, non devi modificare il codice!
+
   4) Nel package.json vado ad aggiungere ai comandi start ed watch --env-file=.env prima di app.js e prima di --watch
 
     struttura:
@@ -187,5 +234,110 @@ ________________________________________________________________
       "test": "echo \"Error: no test specified\" && exit 1"
     }
 
+____________________________________________________________
+
+4) CREAZIONE CONTROLLER
+
+  ora creiamo il controller!
+
+  1) creiamo una cartella controller e ci mettiamo un file chiamato bookControllers.js, dove al suo interno inseriremo tutte le query!
+
+  2) creiamo le varie constanti (index, show, ...)
+
+    struttura:
+
+    //importiamo la connessione la db
+    const connection = require("../data/db");
+
+    //index
+    const index = (req, res) => {
+        console.log("Metodo index")
+    }
+
+    //show
+    const show = (req, res) => {
+        console.log("Metodo show")
+    }
+
+    module.exports = {
+        index,
+        show
+    }  
+
+    module.exports = connection;
+
+    ovviamente index e show non avranno questi contenuti, ma iniziamo almeno a creare uno scheletro al suo interno!
+
+____________________________________________________________
+
+5) ROUTER
+
+  creiamo ora il router di book, in questo caso creiamo la cartella routers con il file bookRouter.js
+
+      al suo interno inseriamo:
+
+      // importiamo express
+      const express = require('express');
+      // importiamo router
+      const router = express.Router();
+      // importiamo il controller
+      const bookController = require("../controllers/bookController");
+
+      // definizione delle rotte
+      // index
+      router.get('/', bookController.index);
+
+      // show
+      router.get('/:id', bookController.show);
+
+      module.exports = router;
+
+    questi ci serviranno poi su postman per vedere i risultati!
+
+    4) creato quindi il router, andiamo in app.js e importiamo il router!
+
+      //importo il router
+      const bookRouter = require("./routers/bookRouter");
+
+      //definisco le rotte per i libri
+      app.use("/api/books", bookRouter);
+
+____________________________________________________________
+
+6) QUERY 
+
+  ora creiamo delle query nel controller!
+
+  1) in controllers/bookController.js modifichiamo index e show in questa maniera:
+
+    //index => recuperiamo tutta la tabella libri
+    
+    const index = (req, res) => {
+      const sql = "SELECT * FROM books";
+
+      //controlliamo se la query inserita è stata eseguita con successo
+      connection.query(sql, (err, results) =>{
+          if(err) 
+              return res.status(500).json({error: "Errore durante la esecuzione della query: "+err});
+          res.json(results);
+          console.log("index eseguito con successo!")
+      })
+    }
+
+    //show => recuperiamo il singolo elemento di un libro 
+
+      //prendiamo l'id inserito su postman
+      const { id } = req.params;
+
+      //definizione della query da eseguire
+      const sql = "SELECT * FROM books WHERE id = ?";
+
+      //controlliamo se la query inserita è stata eseguita con successo
+      connection.query(sql, [id], (err, results) => {
+          if(err)
+              return res.status(500).json({ error: "errore nell'esecuzione della query: "+err});
+          res.json(results);
+          console.log("show eseguito con successo!")
+      })
 
   

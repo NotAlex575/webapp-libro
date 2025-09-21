@@ -1,6 +1,9 @@
 //importo express
 const express = require("express");
 
+//importo il pacchetto cors
+const cors = require("cors");
+
 //creo l'instanza dell'app attraverso il metodo express che ho importato
 const connection = require("./data/db");
 const app = express();
@@ -10,6 +13,9 @@ const port = process.env.PORT;
 
 //importo il router
 const bookRouter = require("./routers/bookRouter");
+
+//registro il middleware per il cors
+app.use(cors({origin: process.env.FE_APP}))
 
 app.use(express.static("public"));
 

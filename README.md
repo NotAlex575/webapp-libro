@@ -577,6 +577,34 @@ per fare ciò:
 
   FE_APP= http://INDIRIZZO 
 
-  tipo per me sarà 
+  tipo per me sarà:
 
   FE_APP = http://localhost:5173/
+
+  3) installiamo un nuovo pacchetto, chiamato cors:
+
+  quindi nel terminal scriviamo: 
+
+  npm install cors
+
+  questo abiliterà le chiamate ajax dal front-end a quella back-end!
+
+  ora lo inseriamo nel progetto!
+
+  4) nel file app.js importiamo cors sotto all'import di express:
+
+  //importo il pacchetto cors
+  const cors = require("cors");
+
+  5) registriamo il pacchetto cors all'interno di app.js sotto all'import di bookRouter:
+
+  //registro il middleware per il cors 
+  app.use(cors({origin: process.env.FE_APP}))
+
+  in origin, il valore è quello contenuto nella variabile FE_APP!
+
+___________________________________________________________
+
+  adesso possiamo ritornare nel lato front-end e mostriamo i libri nella pagina (vai al punto 14)
+
+___________________________________________________________

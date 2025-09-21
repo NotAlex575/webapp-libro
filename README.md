@@ -558,3 +558,25 @@ ____________________________________________________________
       se tutto va bene, su postman comparirà il singolo elemento del book (se hai fatto i passaggi extra, allora vedremo anche la sua recensione)!
 
   
+_____________________________________________________
+
+per continuare il progetto, andare nel progetto books_page per la parte react!
+
+_____________________________________________________
+
+
+13) COMUNICAZIONE FRONT-END BACK-END
+
+ora dobbiamo permettere la comunicazione tra loro, e per fare ciò, dobbiamo abilitare questa applicazione ad accettare le chiamate front-end!
+
+per fare ciò:
+
+  1) andiamo sul .env
+
+  2) sotto a tutto, mettiamo l'indirizzo della pagina front-end:
+
+  FE_APP= http://INDIRIZZO 
+
+  tipo per me sarà 
+
+  FE_APP = http://localhost:5173/

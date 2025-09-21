@@ -579,7 +579,7 @@ per fare ciò:
 
   tipo per me sarà:
 
-  FE_APP = http://localhost:5173/
+  FE_APP = http://localhost:5173
 
   3) installiamo un nuovo pacchetto, chiamato cors:
 

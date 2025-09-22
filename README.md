@@ -149,11 +149,11 @@ ____________________________________________________________
     1) Inserimento libri
         INSERT INTO Books (title, author, image, abstract)
         VALUES
-        ('Il nome della rosa', 'Umberto Eco', 'https://example.com/nome_rosa.jpg', 'Un romanzo storico ambientato in un monastero medievale con un mistero da risolvere.'),
-        ('1984', 'George Orwell', 'https://example.com/1984.jpg', 'Un classico della distopia che descrive un futuro totalitario e oppressivo.'),
-        ('Il Signore degli Anelli', 'J.R.R. Tolkien', 'https://example.com/lotr.jpg', 'Un’epica avventura fantasy ambientata nella Terra di Mezzo.'),
-        ('Orgoglio e pregiudizio', 'Jane Austen', 'https://example.com/pride_prejudice.jpg', 'Un romanzo che esplora i temi dell’amore, del matrimonio e delle convenzioni sociali.'),
-        ('Cronache di Narnia: Il leone, la strega e l’armadio', 'C.S. Lewis', 'https://example.com/narnia.jpg', 'Un classico fantasy per ragazzi con simbolismi profondi e avventure magiche.');
+        ('Il nome della rosa', 'Umberto Eco', 'https://upload.wikimedia.org/wikipedia/en/8/8b/Nome_rosa.jpg', 'Un romanzo storico ambientato in un monastero medievale con un mistero da risolvere.'),
+        ('1984', 'George Orwell', 'https://upload.wikimedia.org/wikipedia/en/c/c3/1984first.jpg', 'Un classico della distopia che descrive un futuro totalitario e oppressivo.'),
+        ('Il Signore degli Anelli', 'J.R.R. Tolkien', 'https://upload.wikimedia.org/wikipedia/en/8/8e/The_Lord_of_the_Rings_cover.gif', 'Un’epica avventura fantasy ambientata nella Terra di Mezzo.'),
+        ('Orgoglio e pregiudizio', 'Jane Austen', 'https://upload.wikimedia.org/wikipedia/commons/d/da/PrideAndPrejudiceTitlePage.jpg', 'Un romanzo che esplora i temi dell’amore, del matrimonio e delle convenzioni sociali.'),
+        ('Cronache di Narnia: Il leone, la strega e l’armadio', 'C.S. Lewis', 'https://upload.wikimedia.org/wikipedia/en/1/12/The_Lion_the_Witch_and_the_Wardrobe.jpg', 'Un classico fantasy per ragazzi con simbolismi profondi e avventure magiche.');
 
       2) Inserimento recensioni
         INSERT INTO Reviews (books_id, name, vote, text)

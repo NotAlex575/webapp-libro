@@ -149,11 +149,19 @@ ____________________________________________________________
     1) Inserimento libri
         INSERT INTO Books (title, author, image, abstract)
         VALUES
-        ('Il nome della rosa', 'Umberto Eco', 'https://upload.wikimedia.org/wikipedia/en/8/8b/Nome_rosa.jpg', 'Un romanzo storico ambientato in un monastero medievale con un mistero da risolvere.'),
-        ('1984', 'George Orwell', 'https://upload.wikimedia.org/wikipedia/en/c/c3/1984first.jpg', 'Un classico della distopia che descrive un futuro totalitario e oppressivo.'),
-        ('Il Signore degli Anelli', 'J.R.R. Tolkien', 'https://upload.wikimedia.org/wikipedia/en/8/8e/The_Lord_of_the_Rings_cover.gif', 'Un’epica avventura fantasy ambientata nella Terra di Mezzo.'),
-        ('Orgoglio e pregiudizio', 'Jane Austen', 'https://upload.wikimedia.org/wikipedia/commons/d/da/PrideAndPrejudiceTitlePage.jpg', 'Un romanzo che esplora i temi dell’amore, del matrimonio e delle convenzioni sociali.'),
-        ('Cronache di Narnia: Il leone, la strega e l’armadio', 'C.S. Lewis', 'https://upload.wikimedia.org/wikipedia/en/1/12/The_Lion_the_Witch_and_the_Wardrobe.jpg', 'Un classico fantasy per ragazzi con simbolismi profondi e avventure magiche.');
+        ('Il nome della rosa', 'Umberto Eco', 'https://sposito.it/wp-content/uploads/2024/12/Il_nome_della_rosa-Connery.jpg', 'Un romanzo storico ambientato in un monastero medievale con un mistero da risolvere.'),
+        ('1984', 'George Orwell', 'https://www.einaudi.it/content/uploads/2021/01/978880624818HIG.JPG', 'Un classico della distopia che descrive un futuro totalitario e oppressivo.'),
+        ('Il Signore degli Anelli', 'J.R.R. Tolkien', 'https://www.madmass.it/wp-content/uploads/2021/07/il-signore-degli-anelli-origine-saga-5-696x434.jpg', 'Un’epica avventura fantasy ambientata nella Terra di Mezzo.'),
+        ('Orgoglio e pregiudizio', 'Jane Austen', 'https://images.justwatch.com/poster/32263632/s718/pride-and-prejudice.jpg', 'Un romanzo che esplora i temi dell’amore, del matrimonio e delle convenzioni sociali.'),
+        ('Cronache di Narnia: Il leone, la strega e l’armadio', 'C.S. Lewis', 'https://animation3d.wordpress.com/files/2009/04/copertina.jpg?w=640', 'Un classico fantasy per ragazzi con simbolismi profondi e avventure magiche.');
+
+
+        ATTENZIONE! se non funzionano i link in una delle immagini, esegui dopo un comando di UPDATE:
+
+        UPDATE Books
+        SET image = 'LINK FOTO'
+        WHERE id = ID DEL LIBRO; => dove ID DEL LIBRO = value che vuoi modificare (1 -> il nome della rosa, 2 -> 1984, etc.)
+
 
       2) Inserimento recensioni
         INSERT INTO Reviews (books_id, name, vote, text)

@@ -14,6 +14,10 @@ const port = process.env.PORT;
 //importo il router
 const bookRouter = require("./routers/bookRouter");
 
+//importo i middlewares
+const errorsHandler = require("./middlewares/errorsHandler.js");
+const notFound = require("./middlewares/notFound.js");
+
 //registro il middleware per il cors
 app.use(cors({origin: process.env.FE_APP}))
 
@@ -26,6 +30,16 @@ app.get("/", (req,res) =>{
 
 //definisco le rotte per i libri
 app.use("/books", bookRouter);
+
+//utilizzo globalmente il middleware errorsHandler
+app.use(errorsHandler);
+//utilizzo globalmente il middleware notFound         
+app.use(notFound);
+
+//esempio utilità di notFound: inserisci questa route in basso su postman (GET)
+//http://localhost:3000/pippo
+//qui darà come risposta "pagina non trovata"
+
 
 //dico al server di rimanere in ascolto sulla porta 3000
 app.listen(port, () =>{

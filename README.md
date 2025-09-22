@@ -604,7 +604,7 @@ _____________________________________________________
     1) sotto a 
 
 
-      const moviesRouter = require("./routers/moviesRouter");
+      const moviesRouter = require("./routers/bookRouter");
 
 
     ci mettiamo gli import dei middleware:
@@ -617,7 +617,7 @@ _____________________________________________________
     2) sopra a 
 
       app.listen(port, () =>{
-        console.log(`server in ascolto nella porta ${port}`);
+          console.log(`server in ascolto nella porta ${port}`);
       });
 
     ci mettiamo questi 2 middleware:
@@ -627,6 +627,7 @@ _____________________________________________________
 
     in questo modo, la webapp adesso gestisce automaticamente gli errori sopra indicati!
 
+    fatto tutto questo, passiamo alla parte front-end react!
 
 _____________________________________________________
 

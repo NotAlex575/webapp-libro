@@ -560,6 +560,76 @@ ____________________________________________________________
   
 _____________________________________________________
 
+8) MIDDLEWARE:
+
+    e se stiamo degli errori, ma non sappiamo precisamente quali sono?????
+
+    possiamo sfruttare un middleware!
+
+    DOMANDA: COS'E UN MIDDLEWARE?
+
+    Un middleware accesso all’oggetto request (req), all’oggetto response (res) e alla funzione next().
+
+    praticamente, vediamo se la risposta avviene correttamente, altrimenti ci manderà un'errore, con la specificazzione del problema!
+
+    creiamo la cartella middlewares, e creiamo 2 file:
+
+    1) errorsHandler -> gestisce gli errori del programma (con un return 500 e l'error message)
+
+        in questo file ci inseriamo:
+
+        const errorsHandler = (err, req, res, next) => {
+            //inernal server error
+            res.status(500).json({
+                error: err.message
+            })
+        }
+
+        module.exports = errorsHandler;
+
+    2) notFound -> gestisce l'errore 404, ovvero ci invia una risposta, in cui la pagina non è stata trovata
+
+        in questo file ci inseriamo:
+
+        const notFound = (req, res, next) =>{
+            res.status(404).json({
+                error: "404 not found",
+                message: "Pagina non trovata"
+            })
+        }
+        module.exports = notFound;
+
+    creati i 2 file nel middleware, li richiamiamo in app.js!
+
+    1) sotto a 
+
+
+      const moviesRouter = require("./routers/moviesRouter");
+
+
+    ci mettiamo gli import dei middleware:
+
+
+      const errorsHandler = require("./middlewares/errorsHandler.js");
+      const notFound = require("./middlewares/notFound.js");
+
+
+    2) sopra a 
+
+      app.listen(port, () =>{
+        console.log(`server in ascolto nella porta ${port}`);
+      });
+
+    ci mettiamo questi 2 middleware:
+
+      app.use(errorsHandler);
+      app.use(notFound);
+
+    in questo modo, la webapp adesso gestisce automaticamente gli errori sopra indicati!
+
+
+_____________________________________________________
+
 per continuare il progetto, andare nel progetto books_page per la parte react!
 
 _____________________________________________________
@@ -596,7 +666,7 @@ per fare ciò:
   //importo il pacchetto cors
   const cors = require("cors");
 
-  5) registriamo il pacchetto cors all'interno di app.js sotto all'import di bookRouter:
+  5) registriamo il pacchetto cors all'interno di app.js sotto all'import di bookRouter (o del nomeRouter):
 
   //registro il middleware per il cors 
   app.use(cors({origin: process.env.FE_APP}))

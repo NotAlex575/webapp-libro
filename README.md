@@ -606,5 +606,51 @@ npm i multer
 
 ```
 
+2. creiamo un nuovo middleware per gestire gli upload, chiamato multer.js
 
+3. importiamo in multer.js multer:
 
+```js
+
+const multer = require("multer");
+
+```
+
+4. definiamo la cartella storage in cui effettuare l'upload:
+
+```js
+
+const multer = require("multer");
+
+```
+
+5. definiamo la cartella storage in cui effettuare l'upload
+
+```js
+
+const storage = multer.diskStorage({
+    destination: ".public/img/books", //definiamo la cartella di destinazione
+    filename: (req, file, cb) =>{
+        console.log(file);
+        const uniqueName = `${Date.now()}-${file.originalname}`;
+        cb(null, uniqueName)
+    }
+})
+
+```
+
+6. creiamo la variabile upload con la proprietà storage, per configurare l'upload!
+
+```js
+
+const upload = multer({storage});
+
+```
+
+7. creiamo il module.exports di upload:
+
+```js
+
+module.exports = upload
+
+```

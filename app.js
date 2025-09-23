@@ -2,7 +2,7 @@
 const express = require("express");
 
 //importo il middleware per le path delle immagini
-const imagePathMiddleware = require("./middlewares/imagePathMiddleware");
+const imagePathMiddleware = require("./middlewares/imagePathMiddleware.js");
 
 //importo il pacchetto cors
 const cors = require("cors");

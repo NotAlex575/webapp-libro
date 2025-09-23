@@ -33,7 +33,7 @@ const show = (req, res) => {
               return res.status(404).json({ error: "Libro non trovato!"});
 
           const book = resultBook[0]
-          book.image = req.imagePath + book.image;
+          book.image = req.imagePath + '/' + book.image;
 
           //query per recuperare le recensioni del libro
           connection.query(sqlReviews, [id], (err, resultReviews) => {

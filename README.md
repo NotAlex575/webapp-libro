@@ -654,3 +654,11 @@ const upload = multer({storage});
 module.exports = upload
 
 ```
+
+8. in bookRouter.js, importiamo il middleware multer:
+
+```js
+
+const upload = require("../middlewares/multer")
+
+```

@@ -1,6 +1,9 @@
 //importo express
 const express = require("express");
 
+//importo il middleware per le path delle immagini
+const imagePathMiddleware = require("./middlewares/imagePathMiddleware");
+
 //importo il pacchetto cors
 const cors = require("cors");
 
@@ -22,6 +25,9 @@ const notFound = require("./middlewares/notFound.js");
 app.use(cors({origin: process.env.FE_APP}))
 
 app.use(express.static("public"));
+
+//uso il middleware per i path delle immagini
+app.use(imagePathMiddleware);
 
 //definisco la rotta base
 app.get("/", (req,res) =>{

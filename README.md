@@ -1,8 +1,8 @@
 # STEPLIST CREAZIONE WEBAPP LIBRERIA (PASSO PER PASSO)
 
-Questa webapp avrà un db di libri a cui possiamo inserire delle recenzioni!
+Questa webapp avrà un db di libri a cui possiamo inserire delle recensioni!
 
-iniziamo con i passaggi per crearla!
+Iniziamo con i passaggi per crearla.
 
 ---
 
@@ -19,109 +19,87 @@ Un database è un sistema che serve a raccogliere, organizzare e gestire dati in
 È come un archivio digitale:
 
 1. una libreria -> è il database
-
 2. gli scaffali -> sono le tabelle
-
 3. i libri sugli scaffali -> sono i record (righe)
-
 4. le informazioni in un libro (titolo, autore, anno) -> sono i campi (colonne)
 
 ---
 
 Dopo aver capito cos'è un database, iniziamo!
 
-1. prima identifichiamo le tabelle di Books e Reviews con le loro value:
+### 1) Identifichiamo le tabelle `Books` e `Reviews` con i loro campi:
 
 **Books table**
 
-* id primary key
-* title
-* author
-* image
-* abstract
+* `id` primary key
+* `title`
+* `author`
+* `image`
+* `abstract`
 
 **Reviews table**
 
-* id primary key
-* books\_id foreign key
-* name
-* vote
-* text
+* `id` primary key
+* `books_id` foreign key
+* `name`
+* `vote`
+* `text`
 
-la relazione tra questi 2 sarà **one (Books) to many (Reviews)**, siccome Books può avere più recensioni, ma una recensione non può stare in più libri
+La relazione tra questi due sarà **one (Books) to many (Reviews)**, siccome un libro può avere più recensioni, ma una recensione appartiene a un solo libro.
 
-2. creiamo il db su MySQL Workbench
+### 2) Creiamo il db su MySQL Workbench — passaggi iniziali
 
-**ecco i passaggi iniziali:**
+1. Se non hai ancora creato una MySQL Connection, creiamone una:
 
-1. se non hai ancora creato un Mysql connector, creiamone subito uno!
+   * Apri MySQL Workbench.
+   * Vicino a *MySQL Connections* clicca il `+` alla sua destra.
+   * Inserisci il nome della connection (puoi mettere quello che vuoi).
+   * Inserisci lo username (ci servirà poi nel progetto).
+   * Fai *Test Connection* e verifica che sia andato tutto correttamente.
+   * Clicca **OK**.
 
-2. aprire Mysql Workbench
+   *Ora abbiamo il connector per il db!*
 
-3. vicino a MySQL Connectors cliccare il + alla sua destra
+2. Clicca sulla connection appena creata per aprirla.
 
-4. inserire il nome della connection name (puoi mettere quello che vuoi)
+Per creare un database:
 
-5. inserisci lo username (questo ci servirà dopo, siccome dovremmo poi inserire questo dato nel progetto)
+* Nella barra a sinistra (SCHEMAS) clicca con il tasto destro del mouse (sotto a tutto) e seleziona **Create Schema...**
+* Inserisci il nome del database (ricordalo!).
+* Clicca **Apply** e conferma.
 
-6. fai il test connection e vedi se è andato tutto correttamente
+Se non hai un file SQL per scrivere query, in MySQL Workbench clicca il pulsante `SQL` (icona foglio con `SQL`) per aprire un nuovo editor SQL (in basso a sinistra c'è un `+`).
 
-7. clicca ok
-
-*ora abbiamo il connector per il db!*
-
-2. ora che abbiamo il Mysql connector, andiamo a cliccarlo ed entriamoci!
-
-per creare un database segui questi passaggi:
-
-1. nella barra a sinistra (SCHEMAS), clicca col tasto destro del mouse (sotto a tutto) e clicca "create schema..."
-
-2. inserisci il nome del database (ci servirà quindi ricordati il nome!)
-
-3. clicca apply e il gioco è fatto!
-
-ora, siccome non abbiamo un database come reference ne creiamo uno come esempio!
-
-ma prima, se non abbiamo ancora un sql file per scrivere le query, basta cliccare in alto a destra il pulsantino con un foglio, il cui all'interno c'è scritto sql e in basso a sinistra ci sta un +
-
-*facendo cosi creiamo un file SQL dove possiamo scrivere le nostre query!*
+*Così crei un file SQL dove scrivere le query.*
 
 ---
 
-**NOTA!** se hai già un database nel tuo computer, segui questi passaggi, ed evita quelli di creazione del database tramite query!
+**NOTA:** se hai già un database sul tuo computer, invece di crearne uno nuovo puoi importarlo:
 
-1. seleziona il tuo database vuoto
+1. Seleziona il tuo database vuoto.
+2. In alto vai su **Server → Data Import**.
+3. Seleziona **Import from Self-Contained-File**.
+4. Clicca `[...]` per selezionare il file `.sql` da importare.
+5. Scegli il file `.sql` che contiene il database.
+6. In **Default Target Schema** seleziona il database di destinazione.
+7. Clicca **Start Import**.
 
-2. in alto a destra, clicca su Server, e vai su Data Import
-
-3. seleziona la dicitura "import from Self-Contained-File"
-
-4. clicca dove stanno i \[...] per selezionare il file da importare
-
-5. scegli il file.sql che tiene il database
-
-6. in "Default Target Schema, seleziona il db\_nomeDato" (in cui nomeDato = al nome del database che gli hai dato)
-
-7. fatto ciò, clicca su start import
-
-se tutto va bene, avrai importato il tuo database, e ti dovrebbe mostrare "Import completed" senza errori!
-
-se hai fatto questo, passa direttamente al punto 2 -> CREAZIONE PROGETTO WEBAPP
+Se tutto va bene vedrai *Import completed* senza errori. Se hai importato il DB, salta alla sezione 2 → CREAZIONE PROGETTO WEBAPP.
 
 ---
 
-ora creiamo un database!
+### Creazione manuale del database (esempio)
 
-ecco qui un'esempio di creazione di un db dei libri (database chiamato `db_books`), usando le seguenti query:
+Esempio di query per creare un database di libri (`db_books`):
 
 ```sql
--- 1) Creazione del database
+-- Creazione del database
 CREATE DATABASE db_books;
 
--- 2) Usa il database
+-- Seleziono il database
 USE db_books;
 
--- 3) Creazione tabella Books
+-- Creazione tabella Books
 CREATE TABLE Books (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -130,7 +108,7 @@ CREATE TABLE Books (
     abstract TEXT
 );
 
--- 4) Creazione tabella Reviews
+-- Creazione tabella Reviews
 CREATE TABLE Reviews (
     id INT AUTO_INCREMENT PRIMARY KEY,
     books_id INT NOT NULL,
@@ -143,9 +121,9 @@ CREATE TABLE Reviews (
 );
 ```
 
-3. ora inseriamo qualche dato:
+### 3) Inseriamo qualche dato (esempio)
 
-4. Inserimento libri
+**Inserimento libri**:
 
 ```sql
 INSERT INTO Books (title, author, image, abstract)
@@ -157,17 +135,15 @@ VALUES
 ('Cronache di Narnia: Il leone, la strega e l’armadio', 'C.S. Lewis', 'https://animation3d.wordpress.com/files/2009/04/copertina.jpg?w=640', 'Un classico fantasy per ragazzi con simbolismi profondi e avventure magiche.');
 ```
 
-**ATTENZIONE!** se non funzionano i link in una delle immagini, esegui dopo un comando di UPDATE:
+**ATTENZIONE:** se i link delle immagini non funzionano, puoi eseguire un `UPDATE`:
 
 ```sql
 UPDATE Books
-SET image = 'LINK FOTO'
-WHERE id = ID_DEL_LIBRO;
+SET image = 'LINK_FOTO'
+WHERE id = ID_DEL_LIBRO; -- es. ID_DEL_LIBRO = 1 per "Il nome della rosa"
 ```
 
-(dove `ID_DEL_LIBRO` = value che vuoi modificare: 1 -> il nome della rosa, 2 -> 1984, ecc.)
-
-2. Inserimento recensioni
+**Inserimento recensioni**:
 
 ```sql
 INSERT INTO Reviews (books_id, name, vote, text)
@@ -202,19 +178,17 @@ VALUES
 
 ## 2) CREAZIONE PROGETTO WEBAPP
 
-Dopo creato il db (se non lo avevi) e inserito dei dati nelle table (sempre se non li avevi), creiamo il nostro progetto attraverso questa steplist:
+Dopo aver creato il DB (o importato quello esistente) e inserito i dati, creiamo il progetto Node/Express:
 
-1. Creo la cartella del progetto e la apro con vscode per lanciare il comando `npm init`
-
-2. Eseguo il comando `npm install` oppure direttamente il comando per installare express e mysql2:
+1. Crea la cartella del progetto e aprila con VSCode. Esegui `npm init`.
+2. Installa Express e mysql2:
 
 ```bash
-npm i express mysql2
+npm install express mysql2
 ```
 
-3. Se non presente creiamo il file `.gitignore` in cui mettere la cartella `node_modules` (se devi importare in git questo è il momento, in modo tale che non importi subito il node\_modules)
-
-4. Aggiorno il file `package.json` inserendo i comandi `start` (node app.js) e `watch` (node --watch app.js)
+3. Crea `.gitignore` e aggiungi `node_modules/` e `.env` (poi vedremo il `.env`).
+4. Aggiorna `package.json` aggiungendo gli script `start` e `watch` (vedi sezione .env per la versione con `--env-file`):
 
 ```json
 "scripts": {
@@ -224,11 +198,7 @@ npm i express mysql2
 }
 ```
 
-5. Creo il file `app.js`:
-
-Scriviamo nel nostro `app.js` i comandi necessari per importare express, utilizzarlo e creare la rotta base nonché mettere in ascolto il server su una porta definita da noi (tipicamente la 3000)
-
-Esempio base:
+5. Crea il file `app.js` con lo scheletro del server:
 
 ```js
 const express = require('express');
@@ -240,26 +210,25 @@ app.get('/', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`server in ascolto sulla porta ${port}`);
+  console.log(`server in ascolto nella porta ${port}`);
 });
 ```
 
-6. creo la cartella `data`, con all'interno il file `db.js`
+6. Crea la cartella `data` e al suo interno `db.js`. Questo file conterrà la connessione al database.
 
-*questo servirà a noi per collegarci direttamente al database che abbiamo!*
-
-Esempio `data/db.js`:
+`data/db.js`:
 
 ```js
 // importiamo mysql2
-const mysql = require("mysql2");
+const mysql = require('mysql2');
 
-// creo la connessione 
-// NOTA: in password, user e database, inserisci i dati che hai messo quando hai creato il MySQL Connections!
+// creo la connessione
+// NOTA: in password, user e database, inserisci i dati che hai messo quando hai creato la MySQL Connection!
+
 const connection = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "password", 
+    password: "password",
     database: "db_books",
     port: 3306
 });
@@ -273,41 +242,39 @@ connection.connect((err) => {
     }
 });
 
-//esporto connection
+// esporto connection
 module.exports = connection;
 ```
 
-7. in `app.js`, sotto a `const express`, ci aggiungiamo questo:
+7. In `app.js`, importa la connessione sotto `const express`:
 
 ```js
-//connessione con il database in app.js
-const connection = require("./data/db");
+// connessione con il database in app.js
+const connection = require('./data/db');
 ```
 
-*così `app.js` sarà collegato col database!*
+Così `app.js` sarà collegato al database.
 
 ---
 
-## 3) CREAZIONE .ENV
+## 3) CREAZIONE `.env`
 
-**DOMANDA: COS'È L'ENV E A CHE SERVE?**
+**DOMANDA: COS'È L'.ENV E A CHE SERVE?**
 
 **RISPOSTA:**
 
-Il file `.env` serve per gestire le variabili d’ambiente del tuo progetto, cioè dei valori che possono cambiare da un ambiente all’altro (sviluppo, test, produzione) senza dover modificare direttamente il codice.
+Il file `.env` serve per gestire le variabili d’ambiente del tuo progetto: valori che possono cambiare tra ambienti (sviluppo/test/produzione) senza modificare il codice.
 
 A cosa serve in pratica:
 
-1. Conserva dati sensibili che non devono stare nel codice (es. password del database, API key, token).
-2. Permette di configurare l’applicazione senza toccare i file .js.
-3. È più sicuro perché viene inserito nel .gitignore, quindi non viene caricato su GitHub o repository pubblici.
-4. Ti consente di cambiare configurazioni velocemente (porta, user, db, ecc.).
+1. Conserva dati sensibili (es. password DB, API key).
+2. Permette di configurare l’app senza toccare i file .js.
+3. È più sicuro perché viene inserito in `.gitignore`.
+4. Consente di cambiare configurazioni velocemente (porta, user, db, ecc.).
 
-Dopo aver capito cos'è il `.env` e la sua utilità, continuiamo la steplist!
+### Creazione del file `.env` (esempio):
 
-1. creiamo un `.env`, inserendo al suo interno delle variabili che serviranno per la connessione al database ed il numero di porta su cui deve rimanere in ascolto il server:
-
-```env
+```
 PORT=3000
 DB_HOST=localhost
 DB_USER=root
@@ -316,23 +283,25 @@ DB_DATABASE=db_books
 DB_PORT=3306
 ```
 
-**NOTA:** sempre in `DB_PASSWORD` ricorda di inserire sempre la stessa password che hai messo nel db, senno darà errore!
+**NOTA:** assicurati che `DB_PASSWORD` corrisponda alla password della tua MySQL Connection.
 
-2. inseriamolo nel `.gitignore` (qui per far vedere come funziona non lo metterò nel `.gitignore`, ma si deve mettere sempre nel `.gitignore` il `.env`)
+### Aggiornamenti al progetto per usare `.env`:
 
-3. cambiamo la const `connection` con questo contenuto (usando `process.env`):
+1. Aggiungi `.env` a `.gitignore`.
+2. Modifica `data/db.js` per usare `process.env`:
 
 ```js
+// creo la connessione
 const connection = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD, //inserisci la tua password presente nel database
+    password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
     port: process.env.DB_PORT
 });
 ```
 
-4. Nel `package.json` vado ad aggiungere ai comandi `start` ed `watch` `--env-file=.env` prima di `app.js` e prima di `--watch`:
+3. Aggiorna gli script in `package.json` per passare il file `.env` (esempio con `node` che supporta `--env-file`):
 
 ```json
 "scripts": {
@@ -342,49 +311,44 @@ const connection = mysql.createConnection({
 }
 ```
 
-*ora i comandi sono sempre gli stessi comandi, ma con più sicurezza!*
+In questo modo, cambiando i valori in `.env` non occorre modificare il codice.
 
 ---
 
 ## 4) CREAZIONE CONTROLLER
 
-ora creiamo il controller!
-
 **DOMANDA: COS'È IL CONTROLLER E A COSA SERVE?**
 
 **RISPOSTA:**
 
-Un controller è un componente che gestisce la logica tra le richieste dell’utente e i dati dell'applicazione.
+Un controller:
 
-1. Riceve le richieste HTTP (GET, POST, PUT, DELETE) provenienti dal client.
-2. Interagisce con i modelli o direttamente con il database per leggere o scrivere dati.
-3. Prepara e invia la risposta al client, tipicamente in formato JSON o HTML.
+1. Riceve le richieste HTTP (GET, POST, PUT, DELETE) dal client.
+2. Interagisce con i modelli o direttamente con il DB per leggere/scrivere dati.
+3. Prepara e invia la risposta al client (JSON/HTML).
 
-Grazie al controller:
+Benefici:
 
-1. siamo in grado di separare le responsabilità delle richieste al database, in modo tale che eseguiamo una query in base a quello che ci serve!
-2. controlla se ci sono degli eventuali errori restituendo messaggi appropriati, attraverso la value `err`, che può tornare un `res.status(500)`, `res.status(404)`, etc.
+* Separazione delle responsabilità tra logica di routing e accesso ai dati.
+* Gestione degli errori con risposte HTTP appropriate (`res.status(500)`, `res.status(404)`, ecc.).
 
-Ora che sappiamo meglio il controller, creiamolo:
+### Creazione del controller `bookController.js`:
 
-1. creiamo una cartella `controllers` e ci mettiamo un file chiamato `bookController.js`, dove al suo interno inseriremo tutte le query!
-
-2. creiamo le varie costanti (`index`, `show`, ...)
-
-Esempio iniziale:
+* Crea la cartella `controllers` e aggiungi `bookController.js`.
+* Aggiungi uno scheletro con le funzioni `index` e `show`:
 
 ```js
-//importiamo la connessione la db
-const connection = require("../data/db");
+// importiamo la connessione al db
+const connection = require('../data/db');
 
-//index
+// index
 const index = (req, res) => {
-    console.log("Metodo index")
+    console.log('Metodo index');
 }
 
-//show
+// show
 const show = (req, res) => {
-    console.log("Metodo show")
+    console.log('Metodo show');
 }
 
 module.exports = {
@@ -393,15 +357,13 @@ module.exports = {
 }
 ```
 
-*index e show, alla fine, non avranno questi contenuti, ma iniziamo almeno a creare uno scheletro all'interno del controller!*
+(index e show saranno poi riempiti con le query.)
 
 ---
 
 ## 5) ROUTER
 
-creiamo ora il router di book, in questo caso creiamo la cartella `routers` con il file `bookRouter.js`.
-
-Esempio `routers/bookRouter.js`:
+Crea la cartella `routers` con il file `bookRouter.js`:
 
 ```js
 // importiamo express
@@ -409,7 +371,7 @@ const express = require('express');
 // importiamo router
 const router = express.Router();
 // importiamo il controller
-const bookController = require("../controllers/bookController");
+const bookController = require('../controllers/bookController');
 
 // definizione delle rotte
 // index
@@ -421,256 +383,228 @@ router.get('/:id', bookController.show);
 module.exports = router;
 ```
 
-*questi ci serviranno poi su postman per vedere i risultati!*
-
-Creato quindi il router, andiamo in `app.js` e importiamo il router:
+Importa il router in `app.js`:
 
 ```js
-//importo il router
-const bookRouter = require("./routers/bookRouter");
+// importo il router
+const bookRouter = require('./routers/bookRouter');
 
-//definisco le rotte per i libri
-app.use("/books", bookRouter);
+// definisco le rotte per i libri
+app.use('/books', bookRouter);
 ```
 
-*in questo modo possiamo già vedere i risultati su postman!* (se vuoi vedere già i risultati vai al punto 7 -> TEST POSTMAN, dove anziché la lista ti compariranno come risultati i `console.log` inseriti nei controller)
+Ora puoi testare le rotte con Postman (vedi sezione 7 → TEST POSTMAN).
 
 ---
 
 ## 6) QUERY
 
-Ora creiamo delle query nel controller!
+Sostituiamo i `console.log` con vere query nel controller.
 
-### index => recuperiamo tutta la tabella libri
+### `controllers/bookController.js` — esempio per `index` e `show`:
 
 ```js
+// index => recuperiamo tutta la tabella libri
 const index = (req, res) => {
-  const sql = "SELECT * FROM books";
+  const sql = 'SELECT * FROM books';
 
-  //controlliamo se la query inserita è stata eseguita con successo
-  connection.query(sql, (err, results) =>{
-      if(err) 
-          return res.status(500).json({error: "Errore durante la esecuzione della query: "+err});
+  connection.query(sql, (err, results) => {
+      if (err)
+          return res.status(500).json({ error: 'Errore durante la esecuzione della query: ' + err });
       res.json(results);
-      console.log("index eseguito con successo!")
-  })
+      console.log('index eseguito con successo!');
+  });
+}
+
+// show => recuperiamo il singolo elemento di un libro
+const show = (req, res) => {
+  const { id } = req.params;
+  const sql = 'SELECT * FROM books WHERE id = ?';
+
+  connection.query(sql, [id], (err, results) => {
+      if (err)
+          return res.status(500).json({ error: 'errore nell\'esecuzione della query: ' + err });
+      res.json(results);
+      console.log('show eseguito con successo!');
+  });
 }
 ```
 
-### show => recuperiamo il singolo elemento di un libro
+### PASSAGGI EXTRA
+
+0. **Check per vedere se non trovo un libro** (da aggiungere dentro `show` dopo l'`if(err)`):
 
 ```js
-//prendiamo l'id inserito su postman
-const { id } = req.params;
-
-//definizione della query da eseguire
-const sql = "SELECT * FROM books WHERE id = ?";
-
-//controlliamo se la query inserita è stata eseguita con successo
-connection.query(sql, [id], (err, results) => {
-    if(err)
-        return res.status(500).json({ error: "errore nell'esecuzione della query: "+err});
-    res.json(results);
-    console.log("show eseguito con successo!")
-})
+// controllo se non ho trovato il libro
+if(resultBook.length === 0 || resultBook[0].id === null)
+    return res.status(404).json({ error: 'Libro non trovato!' });
 ```
 
-*questi andranno a sostituire i console.log, in modo tale che dopo su postman troveremo come risultati la tabella!*
-
----
-
-### PASSAGGI EXTRA!
-
-1. CHECK PER VEDERE SE NON TROVO UN LIBRO:
-
-in `show` possiamo fare un check per vedere se non trovo un libro (lo metti dopo l'`if(err)`):
+1. **Array recensioni** — mostrare anche le recensioni nel `show`:
 
 ```js
-//controllo se non ho trovato il libro
-if(resultBook.length === 0 || resultBook[0].id === null) 
-    return res.status(404).json({ error: "Libro non trovato!"});
+const sqlBook = 'SELECT * FROM books WHERE id = ?';
+const sqlReviews = 'SELECT * FROM reviews WHERE books_id = ?';
+
+// prima query: recupero il libro
+connection.query(sqlBook, [id], (err, resultBook) => {
+  if (err) return res.status(500).json({ error: 'errore nell\'esecuzione della query: ' + err });
+  if (resultBook.length === 0) return res.status(404).json({ error: 'Libro non trovato!' });
+
+  // query per recuperare le recensioni del libro
+  connection.query(sqlReviews, [id], (err, resultReviews) => {
+    if (err) return res.status(500).json({ error: 'errore nell\'esecuzione della query: ' + err });
+
+    // unisco il libro con le recensioni
+    const bookWithReviews = {
+      ...resultBook[0],
+      reviews: resultReviews
+    }
+
+    // UTILIZZA res.send(bookWithReviews) al posto di res.json(results)
+    res.send(bookWithReviews);
+    console.log(`show eseguito con successo con id${id}!`);
+  });
+});
 ```
 
-2. ARRAY RECENSIONI:
+**NOTA IMPORTANTE:** `res.send(bookWithReviews)` sostituisce `res.json(results)` altrimenti darà errore.
 
-sempre in `show` possiamo anche fare in modo che possiamo vedere le recensioni!
-
-1. ora anziché `const sql`, dobbiamo prendere in considerazione 2 chiamate:
-
-```js
-const sqlBook = "SELECT * FROM books WHERE id = ?";
-const sqlReviews = "SELECT * FROM reviews WHERE books_id = ?";
-```
-
-2. sotto il controllo del libro non trovato:
-
-```js
-//query per recuperare le recensioni del libro
-connection.query(sqlReviews, [id], (err, resultReviews) => {
-  if(err)
-      return res.status(500).json({ error: "errore nell'esecuzione della query: "+err});
-
-  //unisco il libro con le recensioni
-  const bookWithReviews = {
-    ...resultBook[0],
-    reviews: resultReviews
-  }
-
-  //SOSTITUISCI res.json(results); CON QUESTO QUI SOTTO!
-  res.send(bookWithReviews)
-  console.log(`show eseguito con successo con id${id}!`)
-})
-```
-
-**NOTA IMPORTANTE:** `res.send(bookWithReviews)` andrà a sostituire `res.json(results);` altrimenti darà errore!
-
-*adesso, se dopo su postman si fa la request show, oltre ai libri, vedremo anche le recensioni!*
-
-In seguito poi possiamo mettere anche `POST`, `PUT` e `DELETE`, ma per ora testiamo questi 2 nel prossimo punto!
+In seguito puoi aggiungere anche le rotte `POST`, `PUT` e `DELETE`.
 
 ---
 
 ## 7) TEST POSTMAN
 
-ora che abbiamo `index` e `show`, testiamo il tutto con Postman!
+Ora che abbiamo `index` e `show`, testiamo con Postman.
 
-1. INIZIALIZZAZIONE POSTMAN
+### INIZIALIZZAZIONE POSTMAN
 
-2. apri Postman
+1. Apri Postman.
+2. Crea una nuova collezione (`Blank Collection`) chiamala `books`.
 
-3. crea una nuova collection => blank collection (chiamiamola `books`)
+### CREAZIONE REQUEST (INDEX)
 
-4. CREAZIONE REQUEST (INDEX)
-
-5. clicchiamo sul `+` vicino alla new connection (si genera così una GET chiamata new request)
-
-6. chiamiamolo `index`, ed inseriamo l'url:
+1. Clicca `+` per aggiungere una nuova request.
+2. Chiamala `index` e inserisci l'URL:
 
 ```
 http://localhost:3000/books
 ```
 
-se tutto va bene, su Postman comparirà l'intera lista dei books!
+Se tutto va bene, Postman mostrerà l'intera lista dei libri.
 
-3. CREAZIONE REQUEST (SHOW)
+### CREAZIONE REQUEST (SHOW)
 
-4. clicchiamo sul `+` vicino alla new connection (si genera così una GET chiamata new request)
-
-5. chiamiamolo `show`, ed inseriamo l'url (esempio):
+1. Clicca `+` per aggiungere una nuova request.
+2. Chiamala `show` e inserisci l'URL (esempio):
 
 ```
 http://localhost:3000/books/1
 ```
 
-IMPORTANTE! inseriamo davanti `1` siccome sarà l'id da ricercare del libro
-
-se tutto va bene, su Postman comparirà il singolo elemento del book (se hai fatto i passaggi extra, allora vedremo anche la sua recensione)!
+Dove `1` è l'`id` del libro da cercare. Se hai implementato le recensioni, vedrai anche quelle.
 
 ---
 
 ## 8) MIDDLEWARE
 
+Se compaiono errori e non sai da dove arrivano, usa un middleware per gestirli.
+
 **DOMANDA: COS'È UN MIDDLEWARE?**
 
-Un middleware ha accesso all’oggetto `request` (`req`), all’oggetto `response` (`res`) e alla funzione `next()`.
+Un middleware ha accesso a `req`, `res` e `next()` ed è utile per intercettare richieste, gestire errori, logging, ecc.
 
-Praticamente, verifica la risposta e, in caso di errori, restituisce il messaggio con la specifica del problema.
+Crea la cartella `middlewares` e aggiungi due file:
 
-Creiamo la cartella `middlewares`, e due file:
-
-1. `errorsHandler.js` -> gestisce gli errori del programma (return 500 + error message)
+### `middlewares/errorsHandler.js`
 
 ```js
 const errorsHandler = (err, req, res, next) => {
-    //internal server error
+    // internal server error
     res.status(500).json({
         error: err.message
-    })
+    });
 }
 
 module.exports = errorsHandler;
 ```
 
-2. `notFound.js` -> gestisce l'errore 404
+### `middlewares/notFound.js`
 
 ```js
-const notFound = (req, res, next) =>{
+const notFound = (req, res, next) => {
     res.status(404).json({
-        error: "404 not found",
-        message: "Pagina non trovata"
-    })
+        error: '404 not found',
+        message: 'Pagina non trovata'
+    });
 }
 module.exports = notFound;
 ```
 
-Creati i 2 file nel middleware, li richiamiamo in `app.js`!
-
-1. sotto a `const moviesRouter = require("./routers/bookRouter");` ci mettiamo gli import dei middleware:
+Importali in `app.js` (sopra `app.listen`):
 
 ```js
-const errorsHandler = require("./middlewares/errorsHandler.js");
-const notFound = require("./middlewares/notFound.js");
-```
+const errorsHandler = require('./middlewares/errorsHandler.js');
+const notFound = require('./middlewares/notFound.js');
 
-2. sopra a `app.listen(...)` ci mettiamo questi 2 middleware:
-
-```js
 app.use(errorsHandler);
 app.use(notFound);
 ```
 
-in questo modo, la webapp adesso gestisce automaticamente gli errori sopra indicati!
+In questo modo la webapp gestisce automaticamente gli errori definiti.
 
-fatto tutto questo, passiamo alla parte front-end React!
-
----
-
-Per continuare il progetto, andare nel progetto `books_page` per la parte React!
+Fatto tutto questo, passiamo alla parte front-end React!
 
 ---
 
-## 13) COMUNICAZIONE FRONT-END BACK-END
+Per continuare il progetto, vai al progetto `books_page` per la parte React.
 
-ora dobbiamo permettere la comunicazione tra loro, e per fare ciò, dobbiamo abilitare questa applicazione ad accettare le chiamate front-end! Per fare ciò:
+---
 
-1. andiamo sul `.env`
+## 13) COMUNICAZIONE FRONT-END / BACK-END
 
-2. sotto a tutto, mettiamo l'indirizzo della pagina front-end:
+Per permettere la comunicazione tra front-end e back-end (CORS):
+
+1. Nel file `.env` aggiungi la variabile con l'indirizzo del front-end:
 
 ```
-FE_APP= http://INDIRIZZO
+FE_APP=http://localhost:5173
 ```
 
-(es. `FE_APP = http://localhost:5173`)
-
-3. installiamo un nuovo pacchetto, chiamato `cors`:
+2. Installa il pacchetto `cors`:
 
 ```bash
 npm install cors
 ```
 
-questo abiliterà le chiamate ajax dal front-end a quella back-end!
-
-4. nel file `app.js` importiamo cors sotto all'import di express:
+3. In `app.js` importa e registra `cors` (sotto l'import di `express`):
 
 ```js
-//importo il pacchetto cors
-const cors = require("cors");
+const cors = require('cors');
+// registro il middleware per il cors
+app.use(cors({ origin: process.env.FE_APP }));
 ```
 
-5. registriamo il pacchetto cors all'interno di `app.js` sotto all'import di `bookRouter`:
-
-```js
-//registro il middleware per il cors 
-app.use(cors({origin: process.env.FE_APP}))
-```
-
-in `origin`, il valore è quello contenuto nella variabile `FE_APP`!
+Questo abilita le chiamate AJAX dal front-end al back-end.
 
 ---
 
-adesso possiamo ritornare nel lato front-end e mostriamo i libri nella pagina (vai al punto 14)
+Adesso possiamo ritornare al lato front-end e mostrare i libri nella pagina (vai al punto 14 del progetto front-end in `books_page`).
 
 ---
+
+19) INSERIMENTO DATI NEL DATABASE (REVIEWS)
+
+in questo step creeremo il lato back-end per l'inserimento di valori nel database, come tipo inserire un nuovo libro con la sua table value, o aggiungere solo una recensione ad un libro esistente!
+
+1. installiamo un nuovo pacchetto nel terminal, chiamato multer:
+
+```bash
+
+npm i multer
+
+```
+
 
 

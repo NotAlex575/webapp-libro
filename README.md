@@ -969,6 +969,12 @@ usiamo Postman!
 
 7. impostiamo store con POST (non GET), siccome non vogliamo vederli, ma inserirli.
 
-8. 
+8. in store clicca su body, come indicato qui sotto:
 
 ![alt text](image.png)
+
+9. se nel menù a tendina, si trova none, cliccaci e clicca tra le varie opzioni form-data
+
+10. inserisci i seguenti dati indicati nella foto:
+
+![alt text](image-1.png)

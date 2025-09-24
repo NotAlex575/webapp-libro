@@ -7,7 +7,7 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) =>{
         console.log(file);
         const uniqueName = `${Date.now()}-${file.originalname}`;
-        cb(null, uniqueName)
+        cb(null, uniqueName); //cb: funzione di callback. null: rappresenta l'errore, e il nome del file (uniqueName)
     }
 })
 

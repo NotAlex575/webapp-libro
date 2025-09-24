@@ -856,6 +856,16 @@ const storage = multer.diskStorage({
 
 ```js
 
+const storage = multer.diskStorage({
+    destination: ".public/img/books", //definiamo la cartella di destinazione
+    filename: (req, file, cb) =>{
+        console.log(file);
+        const uniqueName = `${Date.now()}-${file.originalname}`;
+        cb(null, uniqueName)
+    }
+})
+
+//creiamo la variabile upload con la proprietà storage
 const upload = multer({storage});
 
 ```
@@ -864,6 +874,18 @@ const upload = multer({storage});
 
 ```js
 
+const storage = multer.diskStorage({
+    destination: ".public/img/books", 
+    filename: (req, file, cb) =>{
+        console.log(file);
+        const uniqueName = `${Date.now()}-${file.originalname}`;
+        cb(null, uniqueName)
+    }
+})
+
+const upload = multer({storage});
+
+//esportiamo questo module
 module.exports = upload
 
 ```
@@ -871,12 +893,12 @@ module.exports = upload
 8. in bookRouter.js, importiamo il middleware multer:
 
 ```js
-
+//importiamo il multer
 const upload = require("../middlewares/multer")
 
 ```
 
-9. creiamo il router store:
+9. creiamo il router store sotto al router.get dello show:
 
 ```js
 
@@ -888,6 +910,8 @@ router.post("/", upload.single("image"), bookController.store);
 ---
 
 ## 20) INSERIMENTO DATI NEL DATABASE (STORE)
+
+ora vediamo come inserire i dati nel database tramite bookController:
 
 1. in bookController.js, andiamo a crearci la query della store (show)
 
@@ -965,17 +989,21 @@ ora abbiamo anche la show nel nostro progetto, ma come creiamo un nuovo libro pe
 
 usiamo Postman!
 
-6. apriamo Postman, e creiamo in books una nuova request, chiamata store
+---
 
-7. impostiamo store con POST (non GET), siccome non vogliamo vederli, ma inserirli.
+## 21) POSTMAN (STORE)
 
-8. in store clicca su body, come indicato qui sotto:
+1. apriamo Postman, e creiamo in books una nuova request, chiamata store
+
+2. impostiamo store con POST (non GET), siccome non vogliamo vederli, ma inserirli.
+
+3. in store clicca su body, come indicato qui sotto:
 
 ![alt text](readmePhotoUtilities/image.png)
 
-9. se nel menù a tendina, si trova none, cliccaci e clicca tra le varie opzioni form-data
+4. se nel menù a tendina, si trova none, cliccaci e clicca tra le varie opzioni form-data
 
-10. inserisci i seguenti dati indicati nella foto:
+5. inserisci i seguenti dati indicati nella foto:
 
 ![alt text](readmePhotoUtilities/image-1.png)
 

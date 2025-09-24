@@ -978,3 +978,13 @@ usiamo Postman!
 10. inserisci i seguenti dati indicati nella foto:
 
 ![alt text](readmePhotoUtilities/image-1.png)
+
+se ci inserisci correttamente i dati, adesso puoi inserire nuovi libri nel database, senza eseguire query dal database
+
+
+---
+
+adesso passiamo al lato front-end (progetto books-page), per pubblicare i libri tramite una pagina apposita (senza aprire Postman), o aggiungere una recensione ad un libro.
+
+
+---

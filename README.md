@@ -128,11 +128,11 @@ CREATE TABLE Reviews (
 ```sql
 INSERT INTO Books (title, author, image, abstract)
 VALUES
-('Il nome della rosa', 'Umberto Eco', 'https://sposito.it/wp-content/uploads/2024/12/Il_nome_della_rosa-Connery.jpg', 'Un romanzo storico ambientato in un monastero medievale con un mistero da risolvere.'),
-('1984', 'George Orwell', 'https://www.einaudi.it/content/uploads/2021/01/978880624818HIG.JPG', 'Un classico della distopia che descrive un futuro totalitario e oppressivo.'),
-('Il Signore degli Anelli', 'J.R.R. Tolkien', 'https://www.madmass.it/wp-content/uploads/2021/07/il-signore-degli-anelli-origine-saga-5-696x434.jpg', 'Un’epica avventura fantasy ambientata nella Terra di Mezzo.'),
-('Orgoglio e pregiudizio', 'Jane Austen', 'https://images.justwatch.com/poster/32263632/s718/pride-and-prejudice.jpg', 'Un romanzo che esplora i temi dell’amore, del matrimonio e delle convenzioni sociali.'),
-('Cronache di Narnia: Il leone, la strega e l’armadio', 'C.S. Lewis', 'https://animation3d.wordpress.com/files/2009/04/copertina.jpg?w=640', 'Un classico fantasy per ragazzi con simbolismi profondi e avventure magiche.');
+('Il nome della rosa', 'Umberto Eco', 'Il_nome_della_rosa.jpg', 'Un romanzo storico ambientato in un monastero medievale con un mistero da risolvere.'),
+('1984', 'George Orwell', '1984.jpg', 'Un classico della distopia che descrive un futuro totalitario e oppressivo.'),
+('Il Signore degli Anelli', 'J.R.R. Tolkien', 'il_signore_degli_anelli.jpg', 'Un’epica avventura fantasy ambientata nella Terra di Mezzo.'),
+('Orgoglio e pregiudizio', 'Jane Austen', 'orgoglio_e_pregiudizio.jpg', 'Un romanzo che esplora i temi dell’amore, del matrimonio e delle convenzioni sociali.'),
+('Cronache di Narnia: Il leone, la strega e l’armadio', 'C.S. Lewis', 'le_cronache_di_narnia.jpg', 'Un classico fantasy per ragazzi con simbolismi profondi e avventure magiche.');
 ```
 
 **ATTENZIONE:** se i link delle immagini non funzionano, puoi eseguire un `UPDATE`:
@@ -554,6 +554,167 @@ app.use(notFound);
 
 In questo modo la webapp gestisce automaticamente gli errori definiti.
 
+Anticipiamo un punto, che ci servirà per la gestione delle foto delle card dei libri!
+
+1. creiamo un file public, al suo interno creiamo un file img, al suo interno creiamo un file books
+
+2. inseriamo delle immagini pari al numero di libri che abbiamo inserito nel database
+
+**NOTA IMPORTANTE:** I NOMI DELLE IMMAGINI DEVONO CORRISPONDERE ESATTAMENTE A QUELLI CHE METTERAI NELLA FOLDER, QUINDI VEDI ATTENTAMENTE I NOMI!
+
+3. creiamo un nuovo middleware, chiamato imagePathMiddleware
+
+4. inseriamoci questo:
+
+```js
+// Definiamo un middleware di Express per costruire il percorso completo delle immagini
+const setImagePath= (req, res, next) =>{
+   // Aggiunge a req.imagePath l'URL base della cartella delle immagini sul server
+    req.imagePath = `${req.protocol}://${req.get("host")}/img/books`;
+    next();
+}
+
+module.exports = setImagePath;
+
+```
+
+cosi facendo, ora  l'URL base punta alla cartella per le immagini che avremo poi nel front-end!
+
+ma non abbiamo ancora finito!
+
+5. in app.js inseriamo sotto:
+
+```js
+
+//importo express
+const express = require("express");
+
+```
+
+questo:
+
+```js
+
+//importo il middleware per le path delle immagini
+const imagePathMiddleware = require("./middlewares/imagePathMiddleware.js");
+
+```
+
+cosi importiamo in app.js il middleware
+
+poi inseriamo sotto:
+
+```js
+
+app.use(express.static("public"));
+
+```
+
+questo:
+
+```js
+//uso il middleware per i path delle immagini
+app.use(imagePathMiddleware);
+
+```
+
+ora che lo abbiamo importato nell'app.js lo dobbiamo usare!
+
+6. in bookController, andiamo a modifichare index e show:
+
+INDEX:
+
+```js
+
+//index
+const index = (req, res) => {
+    const sql = "SELECT * FROM books";
+
+    connection.query(sql, (err, results) =>{
+        if(err) 
+            return res.status(500).json({error: "Errore durante la esecuzione della query: "+err});
+
+        // Aggiungi il percorso completo delle immagini a ciascun libro
+        const booksWithFullImagePath = results.map(book => ({
+            ...book,
+            image: req.imagePath + '/' + book.image
+        }));
+
+        res.json(booksWithFullImagePath);
+        console.log("index eseguito con successo!")
+    })
+}
+
+```
+
+SHOW:
+
+```js
+
+//show
+const show = (req, res) => {
+    //prendiamo l'id inserito su postman
+      const { id } = req.params;
+
+     // definizione della query da eseguire
+     const sqlBook = "SELECT * FROM books WHERE id = ?";
+     const sqlReviews = "SELECT * FROM reviews WHERE books_id = ?";
+      
+      //controlliamo se la query inserita è stata eseguita con successo
+      connection.query(sqlBook, [id], (err, resultBook) => {
+          if(err)
+              return res.status(500).json({ error: "errore nell'esecuzione della query: "+err});
+          
+          //controllo se non ho trovato il libro
+          if(resultBook.length === 0 || resultBook[0].id === null) 
+              return res.status(404).json({ error: "Libro non trovato!"});
+
+          const book = resultBook[0]
+          book.image = req.imagePath + '/' + book.image;
+
+          //query per recuperare le recensioni del libro
+          connection.query(sqlReviews, [id], (err, resultReviews) => {
+           if(err)
+              return res.status(500).json({ error: "errore nell'esecuzione della query: "+err});
+
+              //unisco il libro con le recensioni
+              const bookWithReviews = {
+                ...book,
+                reviews: resultReviews
+              }
+
+              res.send(bookWithReviews)
+              console.log(`show eseguito con successo con id ${id}!`)
+            })
+
+
+      })
+}
+
+```
+
+cos'è cambiato?
+
+in index abbiamo inserito la const booksWithFullImagePath, che avrà salvato tutte le immagini (con la path immagine =  req.imagePath + '/' + book.image)
+in show abbiamo inserito la const book (libro singolo), che ha la path immagine = req.imagePath + '/' + book.image, e lo salva dentro a:
+
+
+```js
+
+const bookWithReviews = {
+  ...book,
+  reviews: resultReviews
+}
+
+res.send(bookWithReviews)
+
+```
+
+con questo abbiamo anche la possibilità di inserire le immagini dei nostri libri!
+
+**SPOILER:** più avanti vedremo anche di inserire le immagini con lo STORE!
+
+
 Fatto tutto questo, passiamo alla parte front-end React!
 
 ---
@@ -594,7 +755,7 @@ Adesso possiamo ritornare al lato front-end e mostrare i libri nella pagina (vai
 
 ---
 
-19) INSERIMENTO DATI NEL DATABASE (REVIEWS)
+## 19) INSERIMENTO DATI NEL DATABASE (REVIEWS)
 
 in questo step creeremo il lato back-end per l'inserimento di valori nel database, come tipo inserire un nuovo libro con la sua table value, o aggiungere solo una recensione ad un libro esistente!
 
@@ -662,3 +823,14 @@ module.exports = upload
 const upload = require("../middlewares/multer")
 
 ```
+
+9. creiamo il router store:
+
+```js
+
+//store
+router.post("/", upload.single("image"), bookController.store);
+
+```
+
+10. ora in bookController.js, 

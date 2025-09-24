@@ -5,14 +5,21 @@ const connection = require("../data/db");
 const index = (req, res) => {
     const sql = "SELECT * FROM books";
 
-    //controlliamo se la query inserita è stata eseguita con successo
     connection.query(sql, (err, results) =>{
         if(err) 
             return res.status(500).json({error: "Errore durante la esecuzione della query: "+err});
-        res.json(results);
+
+        // Aggiungi il percorso completo delle immagini a ciascun libro
+        const booksWithFullImagePath = results.map(book => ({
+            ...book,
+            image: req.imagePath + '/' + book.image
+        }));
+
+        res.json(booksWithFullImagePath);
         console.log("index eseguito con successo!")
     })
 }
+
 
 //show
 const show = (req, res) => {
@@ -54,7 +61,30 @@ const show = (req, res) => {
       })
 }
 
+//show
+const store = (req, res) => {
+    // recuperiamo i dati della form
+    const { title, author, abstract } = req.body
+    const fileName = `${req.file.filename}`;
+
+    //query di inserimento
+    const query = "INSERI INTO books (title, author, image, abstract) VALUES (?, ?, ?, ?)";
+
+    //eseguiamo la query
+    connection.query(query, [title, author, fileName, abstract], (err, result) => {
+        if(err){
+            return res.status(500).json({error: "Errore durante l'inserimento "+err})
+        }
+
+        res.status(201).json({
+            result: true,
+            message: "Libro creato con successo!"
+        });
+    })
+}
+
 module.exports = {
     index,
-    show
+    show, 
+    store
 }

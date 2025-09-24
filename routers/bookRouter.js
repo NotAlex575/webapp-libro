@@ -15,6 +15,6 @@ router.get('/', bookController.index);
 router.get('/:id', bookController.show);
 
 //store
-router.post("/", upload.single("image"));
+router.post("/", upload.single("image"), bookController.store);
 
 module.exports = router;

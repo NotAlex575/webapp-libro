@@ -68,7 +68,7 @@ const store = (req, res) => {
     const fileName = `${req.file.filename}`;
 
     //query di inserimento
-    const query = "INSERI INTO books (title, author, image, abstract) VALUES (?, ?, ?, ?)";
+    const query = "INSERT INTO books (title, author, image, abstract) VALUES (?, ?, ?, ?)";
 
     //eseguiamo la query
     connection.query(query, [title, author, fileName, abstract], (err, result) => {

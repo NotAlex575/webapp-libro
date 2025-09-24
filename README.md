@@ -837,18 +837,26 @@ const multer = require("multer");
 
 ```
 
-5. definiamo la cartella storage in cui effettuare l'upload
+5. definiamo la cartella path in cui inserire la cartella di destinazione:
+
+```js
+
+const path = require("path");  
+
+```
+
+6. definiamo la cartella storage in cui effettuare l'upload
 
 ```js
 
 const storage = multer.diskStorage({
-    destination: ".public/img/books", //definiamo la cartella di destinazione
+    destination: path.join(__dirname, "../public/img/books"), //definiamo la cartella di destinazione (qui salverà i file img)
     filename: (req, file, cb) =>{
         console.log(file);
-        const uniqueName = `${Date.now()}-${file.originalname}`;
-        cb(null, uniqueName)
+        cb(null, file.originalname); // usa il nome originale senza timestamp
     }
 })
+
 
 ```
 
@@ -856,14 +864,15 @@ const storage = multer.diskStorage({
 
 ```js
 
+//definiamo la cartella storage in cui effettuare l'upload
 const storage = multer.diskStorage({
-    destination: ".public/img/books", //definiamo la cartella di destinazione
+    destination: path.join(__dirname, "../public/img/books"), //definiamo la cartella di destinazione (qui salverà i file img)
     filename: (req, file, cb) =>{
         console.log(file);
-        const uniqueName = `${Date.now()}-${file.originalname}`;
-        cb(null, uniqueName)
+        cb(null, file.originalname); // usa il nome originale senza timestamp
     }
 })
+
 
 //creiamo la variabile upload con la proprietà storage
 const upload = multer({storage});
@@ -875,13 +884,13 @@ const upload = multer({storage});
 ```js
 
 const storage = multer.diskStorage({
-    destination: ".public/img/books", 
+    destination: path.join(__dirname, "../public/img/books"), //definiamo la cartella di destinazione (qui salverà i file img)
     filename: (req, file, cb) =>{
         console.log(file);
-        const uniqueName = `${Date.now()}-${file.originalname}`;
-        cb(null, uniqueName)
+        cb(null, file.originalname); // usa il nome originale senza timestamp
     }
 })
+
 
 const upload = multer({storage});
 
@@ -957,7 +966,7 @@ const store = (req, res) => {
     const fileName = `${req.file.filename}`;
 
     //query di inserimento
-    const query = "INSERI INTO books (title, author, image, abstract) VALUES (?, ?, ?, ?)";
+    const query = "INSERT INTO books (title, author, image, abstract) VALUES (?, ?, ?, ?)";
 
     //eseguiamo la query
     connection.query(query, [title, author, fileName, abstract], (err, result) => {
@@ -1012,7 +1021,7 @@ se ci inserisci correttamente i dati, adesso puoi inserire nuovi libri nel datab
 
 ---
 
-adesso passiamo al lato front-end (progetto books-page), per pubblicare i libri tramite una pagina apposita (senza aprire Postman), o aggiungere una recensione ad un libro.
+adesso passiamo al lato front-end, per pubblicare i libri tramite una pagina apposita (senza aprire Postman), o aggiungere una recensione ad un libro (vai al punto 22 del progetto books-page)
 
 
 ---

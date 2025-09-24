@@ -135,11 +135,11 @@ VALUES
 ('Cronache di Narnia: Il leone, la strega e l’armadio', 'C.S. Lewis', 'le_cronache_di_narnia.jpg', 'Un classico fantasy per ragazzi con simbolismi profondi e avventure magiche.');
 ```
 
-**ATTENZIONE:** se i link delle immagini non funzionano, puoi eseguire un `UPDATE`:
+**ATTENZIONE:** se vuoi inserire tu un'altra immagine, puoi fare questo tramite un `UPDATE`:
 
 ```sql
 UPDATE Books
-SET image = 'LINK_FOTO'
+SET image = 'NOME_FOTO.jpg'
 WHERE id = ID_DEL_LIBRO; -- es. ID_DEL_LIBRO = 1 per "Il nome della rosa"
 ```
 
@@ -272,7 +272,7 @@ A cosa serve in pratica:
 3. È più sicuro perché viene inserito in `.gitignore`.
 4. Consente di cambiare configurazioni velocemente (porta, user, db, ecc.).
 
-### Creazione del file `.env` (esempio):
+### Creazione del file `.env` (contenuto):
 
 ```
 PORT=3000
@@ -283,7 +283,7 @@ DB_DATABASE=db_books
 DB_PORT=3306
 ```
 
-**NOTA:** assicurati che `DB_PASSWORD` corrisponda alla password della tua MySQL Connection.
+**NOTA:** assicurati che `DB_HOST`,`DB_USER`,`DB_PASSWORD`, `DB_PORT` e `DB_DATABASE` corrisponda ai della tua MySQL Connection.
 
 ### Aggiornamenti al progetto per usare `.env`:
 
@@ -334,8 +334,8 @@ Benefici:
 
 ### Creazione del controller `bookController.js`:
 
-* Crea la cartella `controllers` e aggiungi `bookController.js`.
-* Aggiungi uno scheletro con le funzioni `index` e `show`:
+* Crea la cartella `controllers` e crea il file `bookController.js`.
+* Aggiungi uno scheletro del codice, con le funzioni `index` e `show`:
 
 ```js
 // importiamo la connessione al db
@@ -363,7 +363,9 @@ module.exports = {
 
 ## 5) ROUTER
 
-Crea la cartella `routers` con il file `bookRouter.js`:
+Crea la cartella `routers` e crea il file `bookRouter.js`:
+
+Inseriamo all'interno di Bookrouter.js questo
 
 ```js
 // importiamo express
@@ -383,6 +385,8 @@ router.get('/:id', bookController.show);
 module.exports = router;
 ```
 
+Qui sopra stiamo importando Express, router e il nostro controller.
+
 Importa il router in `app.js`:
 
 ```js
@@ -401,7 +405,7 @@ Ora puoi testare le rotte con Postman (vedi sezione 7 → TEST POSTMAN).
 
 Sostituiamo i `console.log` con vere query nel controller.
 
-### `controllers/bookController.js` — esempio per `index` e `show`:
+in ### `controllers/bookController.js` — modifichiamo `index` e `show` nei seguenti:
 
 ```js
 // index => recuperiamo tutta la tabella libri
@@ -430,9 +434,17 @@ const show = (req, res) => {
 }
 ```
 
+- index -> adesso, tramite il comando 'SELECT * FROM books', prenderà tutti i libri all'interno del nostro database.
+
+- show -> adesso, tramite il comando 'SELECT * FROM books WHERE id = ?', prenderà il singolo libro in base all'id inserito.
+
+Sia index che show, avranno dei check errors, che vengono visti tramite la value (err) 
+
 ### PASSAGGI EXTRA
 
-0. **Check per vedere se non trovo un libro** (da aggiungere dentro `show` dopo l'`if(err)`):
+1. **Check per vedere se non trovo un libro** 
+
+In show, dopo aver fatto l'if (err), con il return dell'err, ci andiamo a mettere un'altro check, per vedere se non è presente quel libro:
 
 ```js
 // controllo se non ho trovato il libro
@@ -440,7 +452,13 @@ if(resultBook.length === 0 || resultBook[0].id === null)
     return res.status(404).json({ error: 'Libro non trovato!' });
 ```
 
-1. **Array recensioni** — mostrare anche le recensioni nel `show`:
+tramite un'error 404, mostriamo che il libro cercato non esiste.
+
+2. **Array recensioni** 
+
+in show, dopo aver fatto il check per vedere se esiste quel libro, vediamo di includerci nella show del libro anche le recensioni presenti nel database (sono più recensioni in un libro)
+
+per fare ciò, dobbiamo modificare il codice della show:
 
 ```js
 const sqlBook = 'SELECT * FROM books WHERE id = ?';
@@ -466,6 +484,40 @@ connection.query(sqlBook, [id], (err, resultBook) => {
     console.log(`show eseguito con successo con id${id}!`);
   });
 });
+```
+
+Cos'è cambiato?
+
+- sql ora è suddiviso in 2 comandi:
+
+```js
+    const sqlBook = 'SELECT * FROM books WHERE id = ?';
+    const sqlReviews = 'SELECT * FROM reviews WHERE books_id = ?';
+```
+
+uno (sqlBook), cerca il libro, mentre l'altro (sqlReviews) cerca le recensioni presenti in un libro.
+in termini di database stiamo passando 
+
+MANY recensioni 
+TO 
+ONE libro
+
+- si trova una constante che tiene racchiuso tutti i dati raccolti, sia libri sia recensioni:
+
+```js
+const bookWithReviews = {
+    ...resultBook[0],
+    reviews: resultReviews
+}
+```
+
+- tramite bookWithReviews, prende il risultato.
+
+```js
+
+ res.send(bookWithReviews);
+console.log(`show eseguito con successo con id${id}!`);
+
 ```
 
 **NOTA IMPORTANTE:** `res.send(bookWithReviews)` sostituisce `res.json(results)` altrimenti darà errore.
@@ -515,9 +567,9 @@ Se compaiono errori e non sai da dove arrivano, usa un middleware per gestirli.
 
 Un middleware ha accesso a `req`, `res` e `next()` ed è utile per intercettare richieste, gestire errori, logging, ecc.
 
-Crea la cartella `middlewares` e aggiungi due file:
+1. Crea la cartella `middlewares` e aggiungi due file al suo interno:
 
-### `middlewares/errorsHandler.js`
+### `errorsHandler.js`
 
 ```js
 const errorsHandler = (err, req, res, next) => {
@@ -530,7 +582,7 @@ const errorsHandler = (err, req, res, next) => {
 module.exports = errorsHandler;
 ```
 
-### `middlewares/notFound.js`
+### `notFound.js`
 
 ```js
 const notFound = (req, res, next) => {
@@ -542,7 +594,7 @@ const notFound = (req, res, next) => {
 module.exports = notFound;
 ```
 
-Importali in `app.js` (sopra `app.listen`):
+2. Importali in `app.js` (sopra `app.listen`):
 
 ```js
 const errorsHandler = require('./middlewares/errorsHandler.js');
@@ -833,4 +885,90 @@ router.post("/", upload.single("image"), bookController.store);
 
 ```
 
-10. ora in bookController.js, 
+---
+
+## 20) INSERIMENTO DATI NEL DATABASE (STORE)
+
+1. in bookController.js, andiamo a crearci la query della store (show)
+
+```js
+const store = (req, res) => {
+
+}
+
+```
+
+2. al suo interno recuperiamo i dati della form:
+
+```js
+const store = (req, res) => {
+    // recuperiamo i dati della form
+    const { title, author, abstract } = req.body
+    const fileName = `${req.file.filename}`;
+}
+
+```
+
+3. inseriamo la query di store del nostro libro:
+
+```js
+const store = (req, res) => {
+    // recuperiamo i dati della form
+    const { title, author, abstract } = req.body
+    const fileName = `${req.file.filename}`;
+
+    //query di inserimento
+    const query = "INSERI INTO books (title, author, image, abstract) VALUES (?, ?, ?, ?)";
+}
+```
+
+4. ora che abbiamo la query, la eseguiamo:
+
+passiamo alla query i dati che abbiamo inserito, e controlla se i dati sono stati inseriti correttamente, e se lo sono manderà uno status 201 (libro creato con successo!)
+
+```js
+const store = (req, res) => {
+    // recuperiamo i dati della form
+    const { title, author, abstract } = req.body
+    const fileName = `${req.file.filename}`;
+
+    //query di inserimento
+    const query = "INSERI INTO books (title, author, image, abstract) VALUES (?, ?, ?, ?)";
+
+    //eseguiamo la query
+    connection.query(query, [title, author, fileName, abstract], (err, result) => {
+        if(err){
+            return res.status(500).json({error: "Errore durante l'inserimento "+err})
+        }
+
+        res.status(201).json({
+            result: true,
+            message: "Libro creato con successo!"
+        });
+    })
+}
+```
+
+5. negli exports, andiamo ad includerci store:
+
+```js
+
+module.exports = {
+    index,
+    show, 
+    store
+}
+
+```
+
+ora abbiamo anche la show nel nostro progetto, ma come creiamo un nuovo libro per testarlo??
+
+usiamo Postman!
+
+6. apriamo Postman, e creiamo in books una nuova request, chiamata store
+
+7. impostiamo store con POST (non GET), siccome non vogliamo vederli, ma inserirli.
+
+8. 
+
+![alt text](image.png)
